@@ -4,6 +4,8 @@
 # https://dev.maxmind.com/geoip/updating-databases/
 # https://github.com/maxmind/geoipupdate
 
+
+# Will be working in current directory
 TargetDir=$(pwd)
 
 cd ${TargetDir}
