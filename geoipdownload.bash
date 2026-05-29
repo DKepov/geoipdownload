@@ -82,7 +82,29 @@ do
 
   echo "Info: Download the archive from the MaxMind server..."
 
-  curl $EditionDownloadLink --output $EditionIDArchive
+  # Сurl settings:
+  # -sS : Hide the progress bar, but show a network error if it happens
+  # --fail : Return an error code if the server responds with 404, 500, etc.
+  # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
+  # --max-time 30 : General limit time to download one file (optional, for security reasons)
+  curl -sS --connect-timeout 5 --max-time 60 $EditionDownloadLink --output $EditionIDArchive
+
+  # Immediately save the curl return code to a variable
+  # The $ variable? stores the status of the last executed command
+  CurlExitCode=$?
+
+  # Checking the variable with the Curl Code
+  if [ "$CurlExitCode" -ne 0 ]; then
+      echo "Error: Curl ended with the code: $ExitCode"
+      if [ "$CurlExitCode" -eq 28 ]; then
+          echo "Error: The timeout has expired for Curl"
+      elif [ "$CurlExitCode" -eq 22 ]; then
+          echo "Error: The server returned an HTTP error (for example, 404 or 403 or 500)"
+      elif [ "$CurlExitCode" -eq 23 ]; then
+          echo "Error: Error writing the file to disk."
+      fi
+      exit 1
+  fi
 
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "gzip compressed data"
