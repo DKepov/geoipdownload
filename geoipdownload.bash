@@ -50,7 +50,10 @@ fi
 declare -a EditionIDs
 read -ra EditionIDs <<< $EditionIDsVar;
 
-echo "Info: Download databases ${#EditionIDs[@]} found: (${EditionIDs[*]})"
+EditionIDsCount=${#EditionIDs[@]}
+EditionIDsLine=$(printf "'%s' " "${EditionIDs[@]}")
+EditionIDsLine=${EditionIDsLine% }
+echo "Info: Download databases ${EditionIDsCount} found: (${EditionIDsLine})"
 
 # Permanent link for downloading files
 
@@ -65,7 +68,7 @@ echo "Info: Starting the database download cycle..."
 for EditionID in "${EditionIDs[@]}"
 do
 
-  echo "Info: Current base is $EditionID"
+  echo "Info: Current base is: '$EditionID'"
 
   EditionIDArchive=$EditionID.mmdb.gz
   EditionIDBase=$EditionID.mmdb
