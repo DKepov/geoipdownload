@@ -89,8 +89,8 @@ do
   if ! file "$EditionIDArchive" | grep -q "gzip compressed data"; then
     echo "Error: MaxMind server error when downloading $EditionID:" >&2
     # Output the error text (for example: "Invalid license key")
-    cat "$EditionIDArchive" >&2
-    echo "" >&2
+    EditionIDArchiveError=$(cat "$EditionIDArchive")
+    echo "Error: $EditionIDArchiveError" >&2
     # Delete temporary downloading File
     echo "Info: Temporary files deleted ..."
     rm -f "$EditionIDArchive"
