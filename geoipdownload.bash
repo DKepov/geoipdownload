@@ -108,7 +108,7 @@ do
   # --fail : Return an error code if the server responds with 404, 500, etc.
   # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
   # --max-time 30 : General limit time to download one file (optional, for security reasons)
-  curl -sS --connect-timeout 5 --max-time 60 $EditionDownloadLink --output $EditionIDArchive
+  curl -sS --connect-timeout 5 --max-time 60 "$EditionDownloadLink" --output "$EditionIDArchive"
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -152,23 +152,23 @@ do
 
   echo "Info: Unpacking the database file..."
 
-  tar -zxf $EditionIDArchive $EditionIDTargetPath
+  tar -zxf "$EditionIDArchive" "$EditionIDTargetPath"
 
   # Moving the destination file to the current directory
 
   echo "Info: Moving the file to the current directory..."
 
-  mv $EditionIDTargetPath $EditionIDBase
+  mv "$EditionIDTargetPath" "$EditionIDBase"
 
   # Delete temporary Extractiong directory
 
   echo "Info: Clearing temporary files and folders..."
 
-  rm -rf $(dirname $EditionIDTargetPath)
+  rm -rf $(dirname "$EditionIDTargetPath")
 
   # Delete temporary downloading Archives
 
-  rm $EditionIDArchive
+  rm "$EditionIDArchive"
 
   echo "Info: The $EditionID database has been updated."
 
