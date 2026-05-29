@@ -14,6 +14,16 @@ if [ ! -w "$TargetDir" ]; then
   exit 1
 fi
 
+# We are trying to create a hidden test file.
+if touch .write_test 2>/dev/null; then
+  # Deleting it if it was created successfully
+  rm -f .write_test
+else
+  echo "Error: No rights to write to the directory '$TargetDir'!" >&2
+  exit 1
+fi
+
+
 GeoIPConfName="GeoIP.conf"
 
 # Checking the existence of a configuration file
