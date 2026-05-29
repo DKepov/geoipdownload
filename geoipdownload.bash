@@ -3,7 +3,8 @@
 cd .
 
 # Analog for geoipupdate
-# https://dev.maxmind.com/geoip/geoipupdate/
+# https://dev.maxmind.com/geoip/updating-databases/
+# https://github.com/maxmind/geoipupdate
 
 GeoIPConfName="GeoIP.conf"
 
@@ -72,7 +73,7 @@ do
   # Downloading Bases
 
   curl $EditionDownloadLink --output $EditionIDArchive
-  
+
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "gzip compressed data"
   if ! file "$EditionIDArchive" | grep -q "gzip compressed data"; then
