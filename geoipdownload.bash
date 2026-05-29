@@ -168,7 +168,7 @@ do
 
   # Delete temporary downloading Archives
 
-  rm "$EditionIDArchive"
+  rm -f "$EditionIDArchive"
 
   echo "Info: The $EditionID database has been updated."
 
