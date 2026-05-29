@@ -4,6 +4,11 @@ TargetDir=$(pwd)
 
 cd ${TargetDir}
 
+# The -w flag verifies the existence of the object and the availability of write permissions
+if [ ! -w "$TargetDir" ]; then
+  echo "Error: No rights to write to the directory '$TargetDir'!" >&2
+  exit 1
+fi
 
 # Analog for geoipupdate
 # https://dev.maxmind.com/geoip/updating-databases/
