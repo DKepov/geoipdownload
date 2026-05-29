@@ -110,7 +110,7 @@ do
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "gzip compressed data"
   if ! file "$EditionIDArchive" | grep -q "gzip compressed data"; then
-    echo "Error: MaxMind server error when downloading $EditionID:" >&2
+    echo "Error: MaxMind server error when downloading '$EditionID':" >&2
     # Output the error text (for example: "Invalid license key")
     EditionIDArchiveError=$(cat "$EditionIDArchive")
     echo "Error: $EditionIDArchiveError" >&2
