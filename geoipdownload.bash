@@ -4,7 +4,7 @@
 # https://dev.maxmind.com/geoip/updating-databases/
 # https://github.com/maxmind/geoipupdate
 
-
+# TODO Need use real maxmind database directory
 # Will be working in current directory
 TargetDir=$(pwd)
 
