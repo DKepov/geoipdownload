@@ -76,8 +76,6 @@ do
   EditionDownloadLink="${EditionDownloadLink/EDITION_ID/$EditionID}"
   EditionDownloadLink="${EditionDownloadLink/LICENSE_KEY/$LicenseKey}"
 
-  echo $EditionDownloadLink
-
   # Downloading Bases
 
   echo "Info: Download the archive from the MaxMind server..."
