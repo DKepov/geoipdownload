@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-cd .
+TargetDir=$(pwd)
+
+cd ${TargetDir}
+
 
 # Analog for geoipupdate
 # https://dev.maxmind.com/geoip/updating-databases/
