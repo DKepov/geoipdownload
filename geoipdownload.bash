@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Analog for geoipupdate
+# https://dev.maxmind.com/geoip/updating-databases/
+# https://github.com/maxmind/geoipupdate
+
 TargetDir=$(pwd)
 
 cd ${TargetDir}
@@ -9,10 +13,6 @@ if [ ! -w "$TargetDir" ]; then
   echo "Error: No rights to write to the directory '$TargetDir'!" >&2
   exit 1
 fi
-
-# Analog for geoipupdate
-# https://dev.maxmind.com/geoip/updating-databases/
-# https://github.com/maxmind/geoipupdate
 
 GeoIPConfName="GeoIP.conf"
 
