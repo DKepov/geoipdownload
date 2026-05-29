@@ -68,7 +68,7 @@ if [ -z "$EditionIDsVar" ]; then
 fi
 
 declare -a EditionIDs
-read -ra EditionIDs <<< $EditionIDsVar;
+read -ra EditionIDs <<< "$EditionIDsVar";
 
 EditionIDsCount=${#EditionIDs[@]}
 EditionIDsLine=$(printf "'%s' " "${EditionIDs[@]}")
