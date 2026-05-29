@@ -7,11 +7,23 @@ cd .
 
 GeoIPConfName="GeoIP.conf"
 
+# Checking the existence of a configuration file
+if [ ! -f "$GeoIPConfName" ]; then
+  echo "Error: The configuration file '$GeoIPConfName' was not found!" >&2
+  exit 1
+fi
+
 # Getting the License Key
 
 LicenseKeyVar=$(cat $GeoIPConfName | grep -oP '^LicenseKey\s+\K\S+')
 
 LicenseKey=$LicenseKeyVar
+
+# Checking the existence of the 'LicenseKey' in the configuration file
+if [ -z "$LicenseKey" ]; then
+  echo "Error: The 'LicenseKey' parameter is empty or missing in '$GeoIPConfName'!" >&2
+  exit 1
+fi
 
 # Getting the EditionIDs GeoIP Bases
 # Making List of GeoIP Bases
@@ -24,8 +36,14 @@ LicenseKey=$LicenseKeyVar
 
 EditionIDsVar=$(cat $GeoIPConfName | grep -Po "(?<=EditionIDs\s).*")
 
-read -ra EditionIDs <<< $EditionIDsVar;
+# Checking the existence of the 'EditionIDs' in the configuration file
+if [ -z "$EditionIDsVar" ]; then
+  echo "Error: The 'EditionIDs' parameter is empty or missing in '$GeoIPConfName'!" >&2
+  exit 1
+fi
+
 declare -a EditionIDs
+read -ra EditionIDs <<< $EditionIDsVar;
 
 # Permanent link for downloading files
 
@@ -54,6 +72,18 @@ do
   # Downloading Bases
 
   curl $EditionDownloadLink --output $EditionIDArchive
+  
+  # Checking if the file has been downloaded, or is there an error from the api?
+  # The file command checks the file header. A correct archive will return "gzip compressed data"
+  if ! file "$EditionIDArchive" | grep -q "gzip compressed data"; then
+    echo "MaxMind server error when downloading $EditionID:" >&2
+    # Output the error text (for example: "Invalid license key")
+    cat "$EditionIDArchive" >&2
+    echo "" >&2
+    # Delete temporary downloading File
+    rm -f "$EditionIDArchive"
+    exit 1
+  fi
 
   # Getting the path to the Destination file
 
