@@ -116,7 +116,7 @@ do
 
   # Checking the variable with the Curl Code
   if [ "$CurlExitCode" -ne 0 ]; then
-      echo "Error: Curl ended with the code: $ExitCode"
+      echo "Error: Curl ended with the code: $CurlExitCode"
       if [ "$CurlExitCode" -eq 28 ]; then
           echo "Error: The timeout has expired for Curl"
       elif [ "$CurlExitCode" -eq 22 ]; then
