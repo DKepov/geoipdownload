@@ -14,21 +14,21 @@ It is suitable as an easy alternative to `geoipupdate` if you need a simple and 
 
 
 
-# Original Project
+## Original Project
 
 https://github.com/maxmind/geoipupdate
 
-# Documentation for Updating Database
+## Documentation for Updating Database
 
 https://dev.maxmind.com/geoip/updating-databases/
 
 
-# Credits
+## Credits
 
 - [Dmitriy Kepov][link-author]
 
 
-# License
+## License
 
 The MIT License (MIT). Please see [License File][license] for more information.
 
