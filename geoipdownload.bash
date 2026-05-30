@@ -24,7 +24,6 @@ else
   exit 1
 fi
 
-
 GeoIPConfName="GeoIP.conf"
 
 # Checking the existence of a configuration file
@@ -77,7 +76,6 @@ echo "Info: Download databases ${EditionIDsCount} found: (${EditionIDsLine})"
 # Permanent link for downloading files
 
 DownloadLink="https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz"
-
 
 echo "Info: Starting the database download cycle..."
 
@@ -145,7 +143,7 @@ do
 
   echo "Info: Search for the path of the database file inside the archive..."
 
-  EditionIDTargetPath=$(tar -tf $EditionIDArchive | grep $EditionIDBase)
+  EditionIDTargetPath=$(tar -tf "$EditionIDArchive" | grep "$EditionIDBase")
 
   # Extracting the final file from the archive
 
