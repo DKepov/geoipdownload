@@ -16,7 +16,7 @@
 #  EditionIDs GeoLite2-City GeoLite2-Country
 #
 # How to use:
-#  bash geoipdownload.bash
+#  geoipdownload --help
 #
 
 # Strict mode
@@ -55,11 +55,40 @@ info() {
 } # info()
 
 #
+# Usage "--help" function
+#
+usage() {
+  cat <<'EOF'
+Download MaxMind GeoIP databases listed in GeoIP.conf 
+into the current directory.
+
+The script expects GeoIP.conf in the working directory and writes the
+downloaded .mmdb files there.
+
+Expected GeoIP.conf format:
+  LicenseKey YOUR_LICENSE_KEY
+  EditionIDs GeoLite2-City GeoLite2-Country
+
+
+Usage: geoipdownload [FLAGS]
+
+FLAGS:
+
+  -h, --help      Show this help message.
+
+EOF
+}
+
+#
 # Parsing of arguments
 #
 parse_args() {
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
+      -h|--help)
+        usage
+        exit 0
+        ;;
       *)
         err "Unknown argument: $1"
         exit 1
