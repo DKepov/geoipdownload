@@ -17,6 +17,7 @@
 #
 # How to use:
 #  geoipdownload --help
+#  geoipdownload -f CONFIG_FILE -d TARGET_DIRECTORY
 #
 
 # Strict mode
@@ -30,6 +31,9 @@ readonly GEOIP_CONF_NAME='GeoIP.conf'
 readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
+
+CONFIG_FILE=""
+DATABASE_DIRECTORY=""
 
 VERBOSE=0
 
@@ -76,12 +80,24 @@ Expected GeoIP.conf format:
   EditionIDs GeoLite2-City GeoLite2-Country
 
 
-Usage: geoipdownload [FLAGS]
+Usage: geoipdownload [FLAGS] -f CONFIG_FILE -d TARGET_DIRECTORY
 
 FLAGS:
 
   -h, --help                    Show this help message.
   -v, --vvv, --verbose          Print informational and error messages.
+
+PARAMS (required):
+
+  -f, --config-file             Path to GeoIP.conf.
+                                This is required.
+                                See GeoIP.conf and its documentation for 
+                                more information.
+
+  -d, --database-directory      Path to Directory where .mmdb files will be written.
+                                This is required.
+                                For install databases to a custom directory 
+                                you need check documentation.
 
 EOF
 }
@@ -89,23 +105,63 @@ EOF
 #
 # Parsing of arguments
 #
+# Validation of the argument string via getopt
+# Important: we are suppressing the verification of unknown parameters
+#
 parse_args() {
-  while [[ "$#" -gt 0 ]]; do
+
+  local options
+  local short_options
+  local long_options
+
+  # Validation of the argument string via getopt
+  # --options sets short flags, --longoptions sets long flags.
+  # "$@" passes the current script arguments.
+  
+  # Configuring the getopt utility
+  short_options='f:d:vh'
+  long_options='config-file:,database-directory:,verbose,vvv,help'
+
+  # Important: we are suppressing the verification of unknown parameters with --quiet
+  options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2>/dev/null || true
+
+  # Overwriting the positional parameters of the script ($1, $2...) the cleared string from getopt
+  eval set -- "$options"
+
+  while true; do
     case "$1" in
+      -f|--config-file)
+        CONFIG_FILE="$2"
+        shift 2
+        ;;
+      -d|--database-directory)
+        DATABASE_DIRECTORY="$2"
+        shift 2
+        ;;
       -h|--help)
         usage
         exit 0
         ;;
       -v|--vvv|--verbose)
         VERBOSE=1
+        shift
+        ;;
+      --)
+        shift
+        break
         ;;
       *)
-        err "Unknown argument: $1"
-        exit 1
+        shift
         ;;
     esac
-    shift
   done
+
+# Checking required parameters (if the script was run without any flags at all)
+if [[ -z "$CONFIG_FILE" || -z "$DATABASE_DIRECTORY" ]]; then
+  err "The '--config-file (-f)' and '--database-directory (-d)' parameters are strictly required!"
+  exit 1
+fi
+
 } # parse_args()
 
 # 
