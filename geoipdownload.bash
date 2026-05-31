@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #
 # Download MaxMind GeoIP databases listed in GeoIP.conf into the current
