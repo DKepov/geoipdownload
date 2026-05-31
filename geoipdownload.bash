@@ -31,6 +31,29 @@ readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
 
+#
+# Any message function template
+#
+mess() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
+} # mess()
+
+#
+# Error message
+#
+err() {
+  mess=$(mess "[ERROR]" "$*")
+  echo "${mess}"  >&2
+} # err()
+
+#
+# Info message
+#
+info() {
+  mess=$(mess "[INFO] " "$*")
+  echo "${mess}" >&2
+} # info()
+
 # 
 # Main function
 #
@@ -43,7 +66,7 @@ main() {
 
   # The -w flag verifies the existence of the object and the availability of write permissions
   if [ ! -w "$target_dir" ]; then
-    echo "Error: No rights to write to the directory '$target_dir'!" >&2
+    err "No rights to write to the directory '$target_dir'!"
     exit 1
   fi
 
@@ -52,17 +75,17 @@ main() {
     # Deleting it if it was created successfully
     rm -f .write_test
   else
-    echo "Error: No rights to write to the directory '$target_dir'!" >&2
+    err "No rights to write to the directory '$target_dir'!"
     exit 1
   fi
 
   # Checking the existence of a configuration file
   if [ ! -f "$GEOIP_CONF_NAME" ]; then
-    echo "Error: The configuration file '$GEOIP_CONF_NAME' was not found!" >&2
+    err "The configuration file '$GEOIP_CONF_NAME' was not found!"
     exit 1
   fi
 
-  echo "Info: The configuration file '$GEOIP_CONF_NAME' was found."
+  info "The configuration file '$GEOIP_CONF_NAME' was found."
 
   # Pre-reading full config
   geo_ip_config=$(cat "$GEOIP_CONF_NAME")
@@ -75,11 +98,11 @@ main() {
 
   # Checking the existence of the 'LicenseKey' in the configuration file
   if [ -z "$license_key" ]; then
-    echo "Error: The 'LicenseKey' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
+    err "The 'LicenseKey' parameter is empty or missing in '$GEOIP_CONF_NAME'!"
     exit 1
   fi
 
-  echo "Info: The license key has been successfully read."
+  info "The license key has been successfully read."
 
   # Getting the EditionIDs GeoIP Bases
   # Making List of GeoIP Bases
@@ -94,7 +117,7 @@ main() {
 
   # Checking the existence of the 'EditionIDs' in the configuration file
   if [ -z "$edition_ids_var" ]; then
-    echo "Error: The 'EditionIDs' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
+    err "The 'EditionIDs' parameter is empty or missing in '$GEOIP_CONF_NAME'!"
     exit 1
   fi
 
@@ -104,11 +127,11 @@ main() {
   edition_ids_count=${#edition_ids[@]}
   edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
   edition_ids_line=${edition_ids_line% }
-  echo "Info: Download databases ${edition_ids_count} found: (${edition_ids_line})"
+  info "Download databases ${edition_ids_count} found: (${edition_ids_line})"
 
   # Permanent link for downloading files
 
-  echo "Info: Starting the database download cycle..."
+  info "Starting the database download cycle..."
 
   # Walking through the array
   # And downloading database in current directory
@@ -116,7 +139,7 @@ main() {
   for edition_id in "${edition_ids[@]}"
   do
 
-    echo "Info: Current base is: '$edition_id'"
+    info "Current base is: '$edition_id'"
 
     edition_id_archive="${edition_id}.mmdb.gz"
     edition_id_base="${edition_id}.mmdb"
@@ -129,7 +152,7 @@ main() {
 
     # Downloading Bases
 
-    echo "Info: Download the archive from the MaxMind server..."
+    info "Download the archive from the MaxMind server..."
 
     # Сurl settings:
     # -sS : Hide the progress bar, but show a network error if it happens
@@ -144,13 +167,13 @@ main() {
 
     # Checking the variable with the Curl Code
     if [ "$curl_exit_code" -ne 0 ]; then
-        echo "Error: Curl ended with the code: $curl_exit_code"
+        err "Curl ended with the code: $curl_exit_code"
         if [ "$curl_exit_code" -eq 28 ]; then
-            echo "Error: The timeout has expired for Curl"
+            err "The timeout has expired for Curl"
         elif [ "$curl_exit_code" -eq 22 ]; then
-            echo "Error: The server returned an HTTP error (for example, 404 or 403 or 500)"
+            err "The server returned an HTTP error (for example, 404 or 403 or 500)"
         elif [ "$curl_exit_code" -eq 23 ]; then
-            echo "Error: Error writing the file to disk."
+            err "Error writing the file to disk."
         fi
         exit 1
     fi
@@ -158,39 +181,39 @@ main() {
     # Checking if the file has been downloaded, or is there an error from the api?
     # The file command checks the file header. A correct archive will return "gzip compressed data"
     if ! file "$edition_id_archive" | grep -q "gzip compressed data"; then
-      echo "Error: MaxMind server error when downloading '$edition_id':" >&2
+      err "MaxMind server error when downloading '$edition_id':"
       # Output the error text (for example: "Invalid license key")
       edition_id_archive_error=$(cat "$edition_id_archive")
-      echo "Error: $edition_id_archive_error" >&2
+      err "$edition_id_archive_error"
       # Delete temporary downloading File
-      echo "Info: Temporary files deleted ..."
+      info "Temporary files deleted ..."
       rm -f "$edition_id_archive"
       exit 1
     fi
 
-    echo "Info: The archive has been downloaded successfully."
+    info "The archive has been downloaded successfully."
 
     # Getting the path to the Destination file
 
-    echo "Info: Search for the path of the database file inside the archive..."
+    info "Search for the path of the database file inside the archive..."
 
     edition_id_target_path=$(tar -tf "$edition_id_archive" | grep "$edition_id_base")
 
     # Extracting the final file from the archive
 
-    echo "Info: Unpacking the database file..."
+    info "Unpacking the database file..."
 
     tar -zxf "$edition_id_archive" "$edition_id_target_path"
 
     # Moving the destination file to the current directory
 
-    echo "Info: Moving the file to the current directory..."
+    info "Moving the file to the current directory..."
 
     mv "$edition_id_target_path" "$edition_id_base"
 
     # Delete temporary Extractiong directory
 
-    echo "Info: Clearing temporary files and folders..."
+    info "Clearing temporary files and folders..."
 
     rm -rf "$(dirname "$edition_id_target_path")"
 
@@ -198,11 +221,11 @@ main() {
 
     rm -f "$edition_id_archive"
 
-    echo "Info: The $edition_id database has been updated."
+    info "The $edition_id database has been updated."
 
   done
 
-  echo "Info: All GeoIP databases have been successfully updated!"
+  info "All GeoIP databases have been successfully updated!"
 
 } # main()
 
