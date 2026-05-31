@@ -30,7 +30,6 @@ set -o pipefail
 
 
 # Constants
-readonly GEOIP_CONF_NAME='GeoIP.conf'
 readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
@@ -185,36 +184,34 @@ main() {
   parse_args "$@"
 
   # Will be working in current directory
-  target_dir=$(pwd)
-
-  cd "${target_dir}"
+  cd "${DATABASE_DIRECTORY}"
 
   # The -w flag verifies the existence of the object and the availability of write permissions
-  if [ ! -w "$target_dir" ]; then
-    err "No rights to write to the directory '$target_dir'!"
+  if [ ! -w "$DATABASE_DIRECTORY" ]; then
+    err "No rights to write to the directory '$DATABASE_DIRECTORY'!"
     exit 1
   fi
 
   # We are trying to create a hidden test file.
-  write_test_file="${target_dir}/.write_test"
+  write_test_file="${DATABASE_DIRECTORY}/.write_test"
   if touch "$write_test_file" 2>/dev/null; then
     # Deleting it if it was created successfully
     rm -f "$write_test_file"
   else
-    err "No rights to write to the directory '$target_dir'!"
+    err "No rights to write to the directory '$DATABASE_DIRECTORY'!"
     exit 1
   fi
 
   # Checking the existence of a configuration file
-  if [ ! -f "$GEOIP_CONF_NAME" ]; then
-    err "The configuration file '$GEOIP_CONF_NAME' was not found!"
+  if [ ! -f "$CONFIG_FILE" ]; then
+    err "The configuration file '$CONFIG_FILE' was not found!"
     exit 1
   fi
 
-  info "The configuration file '$GEOIP_CONF_NAME' was found."
+  info "The configuration file '$CONFIG_FILE' was found."
 
   # Pre-reading full config
-  geo_ip_config=$(cat "$GEOIP_CONF_NAME")
+  geo_ip_config=$(cat "$CONFIG_FILE")
 
   # Getting the License Key
 
@@ -224,7 +221,7 @@ main() {
 
   # Checking the existence of the 'LicenseKey' in the configuration file
   if [ -z "$license_key" ]; then
-    err "The 'LicenseKey' parameter is empty or missing in '$GEOIP_CONF_NAME'!"
+    err "The 'LicenseKey' parameter is empty or missing in '$CONFIG_FILE'!"
     exit 1
   fi
 
@@ -243,7 +240,7 @@ main() {
 
   # Checking the existence of the 'EditionIDs' in the configuration file
   if [ -z "$edition_ids_var" ]; then
-    err "The 'EditionIDs' parameter is empty or missing in '$GEOIP_CONF_NAME'!"
+    err "The 'EditionIDs' parameter is empty or missing in '$CONFIG_FILE'!"
     exit 1
   fi
 
