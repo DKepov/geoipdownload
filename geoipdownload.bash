@@ -31,6 +31,8 @@ readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
 
+VERBOSE=0
+
 #
 # Any message function template
 #
@@ -51,9 +53,11 @@ err() {
 # Info message
 #
 info() {
-  local msg
-  msg=$(message "[INFO] " "$*")
-  echo "${msg}" >&2
+  if [[ "$VERBOSE" -eq 1 ]]; then
+    local msg
+    msg=$(message "[INFO] " "$*")
+    echo "${msg}" >&2
+  fi
 } # info()
 
 #
@@ -76,7 +80,8 @@ Usage: geoipdownload [FLAGS]
 
 FLAGS:
 
-  -h, --help      Show this help message.
+  -h, --help                    Show this help message.
+  -v, --vvv, --verbose          Print informational and error messages.
 
 EOF
 }
@@ -90,6 +95,9 @@ parse_args() {
       -h|--help)
         usage
         exit 0
+        ;;
+      -v|--vvv|--verbose)
+        VERBOSE=1
         ;;
       *)
         err "Unknown argument: $1"
