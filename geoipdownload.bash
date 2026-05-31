@@ -26,10 +26,10 @@ set -o pipefail
 
 
 # Constants
-GEOIP_CONF_NAME='GeoIP.conf'
-DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
-CURL_CONNECT_TIMEOUT=5
-CURL_MAX_TIME=60
+readonly GEOIP_CONF_NAME='GeoIP.conf'
+readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
+readonly CURL_CONNECT_TIMEOUT=5
+readonly CURL_MAX_TIME=60
 
 # Will be working in current directory
 target_dir=$(pwd)
