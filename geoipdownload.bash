@@ -54,9 +54,12 @@ fi
 
 echo "Info: The configuration file '$GeoIPConfName' was found."
 
+# Pre-reading full config
+GeoIPConfig=$(cat "$GeoIPConfName")
+
 # Getting the License Key
 
-LicenseKeyVar=$(cat "$GeoIPConfName" | grep -oP '^LicenseKey\s+\K\S+')
+LicenseKeyVar=$(echo "$GeoIPConfig" | grep -oP '^LicenseKey\s+\K\S+')
 
 LicenseKey=$LicenseKeyVar
 
@@ -77,7 +80,7 @@ echo "Info: The license key has been successfully read."
 #  "GeoLite2-Country"
 #)
 
-EditionIDsVar=$(cat "$GeoIPConfName" | grep -Po "(?<=EditionIDs\s).*")
+EditionIDsVar=$(echo "$GeoIPConfig" | grep -Po "(?<=EditionIDs\s).*")
 
 # Checking the existence of the 'EditionIDs' in the configuration file
 if [ -z "$EditionIDsVar" ]; then
