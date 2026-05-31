@@ -27,7 +27,7 @@ set -o pipefail
 # Will be working in current directory
 TargetDir=$(pwd)
 
-cd ${TargetDir}
+cd "${TargetDir}"
 
 # The -w flag verifies the existence of the object and the availability of write permissions
 if [ ! -w "$TargetDir" ]; then
@@ -181,7 +181,7 @@ do
 
   echo "Info: Clearing temporary files and folders..."
 
-  rm -rf $(dirname "$EditionIDTargetPath")
+  rm -rf "$(dirname "$EditionIDTargetPath")"
 
   # Delete temporary downloading Archives
 
