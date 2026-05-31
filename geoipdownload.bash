@@ -19,6 +19,9 @@
 #  geoipdownload --help
 #  geoipdownload -f CONFIG_FILE -d TARGET_DIRECTORY
 #
+# Example to use:
+#  geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
+#
 
 # Strict mode
 set -o errexit
