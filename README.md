@@ -1,6 +1,8 @@
 # geoipdownload
 
-Analog for Official GeoIpUpdate
+GeoIP and GeoLite Update Program.
+
+Analog for official ``geoipupdate`` сlient.
 
 # GeoIP Database Downloader
 
