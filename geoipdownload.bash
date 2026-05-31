@@ -54,10 +54,28 @@ info() {
   echo "${mess}" >&2
 } # info()
 
+#
+# Parsing of arguments
+#
+parse_args() {
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      *)
+        err "Unknown argument: $1"
+        exit 1
+        ;;
+    esac
+    shift
+  done
+} # parse_args()
+
 # 
 # Main function
 #
 main() {
+
+  # Parsing of arguments
+  parse_args "$@"
 
   # Will be working in current directory
   target_dir=$(pwd)
