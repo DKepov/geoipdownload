@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 # Strict mode
-set -euo pipefail
+set -o errexit
+set -o nounset
+set -o pipefail
 
 # Analog for geoipupdate
 # https://dev.maxmind.com/geoip/updating-databases/
