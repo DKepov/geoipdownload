@@ -15,6 +15,9 @@
 #  LicenseKey YOUR_LICENSE_KEY
 #  EditionIDs GeoLite2-City GeoLite2-Country
 #
+# How to use:
+#  bash geoipdownload.bash
+#
 
 # Strict mode
 set -o errexit
