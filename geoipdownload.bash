@@ -175,7 +175,61 @@ fi
 
 } # parse_args()
 
-# 
+#
+# Check Config exists
+#
+# Checking Config on exists
+# We display errors and information messages inside
+#
+check_config_exists() {
+
+  if [[ ! -f "$CONFIG_FILE" ]]; then
+    err "The configuration file '$CONFIG_FILE' not found!"
+    exit 1
+  fi
+
+  if [[ ! -r "$CONFIG_FILE" ]]; then
+    err "The configuration file '$CONFIG_FILE' cannot be read!"
+    exit 1
+  fi
+
+  info "The configuration file '$CONFIG_FILE' found and ready for use."
+
+} # check_config_exists()
+
+#
+# Check Directory exists and writable
+#
+# Checking Directory on exists and writable
+# We display errors and information messages inside
+#
+check_directory_exists_and_writable() {
+
+  if [[ ! -d "$DATABASE_DIRECTORY" ]]; then
+    err "The database directory '$CONFIG_FILE' not found!"
+    exit 1
+  fi
+
+  if [[ ! -w "$DATABASE_DIRECTORY" ]]; then
+    err "The database directory "$DATABASE_DIRECTORY" is not writable!"
+    exit 1
+  fi
+
+  # We are trying to create a hidden test file
+  write_test_file="${DATABASE_DIRECTORY}/.write_test"
+  if touch "$write_test_file" 2>/dev/null; then
+    # Deleting it if it was created successfully
+    rm -f "$write_test_file"
+  else
+    err "The database directory "$DATABASE_DIRECTORY" is not writable!"
+    exit 1
+  fi
+
+  info "The database directory '$DATABASE_DIRECTORY' found and ready for use."
+
+} # check_directory_exists_and_writable()
+
+#
 # Main function
 #
 main() {
@@ -183,32 +237,14 @@ main() {
   # Parsing of arguments
   parse_args "$@"
 
+  # Checking Config on exists
+  check_config_exists "$CONFIG_FILE"
+
+  # Checking Directory on exists and writable
+  check_directory_exists_and_writable "$DATABASE_DIRECTORY"
+
   # Will be working in current directory
   cd "${DATABASE_DIRECTORY}"
-
-  # The -w flag verifies the existence of the object and the availability of write permissions
-  if [ ! -w "$DATABASE_DIRECTORY" ]; then
-    err "No rights to write to the directory '$DATABASE_DIRECTORY'!"
-    exit 1
-  fi
-
-  # We are trying to create a hidden test file.
-  write_test_file="${DATABASE_DIRECTORY}/.write_test"
-  if touch "$write_test_file" 2>/dev/null; then
-    # Deleting it if it was created successfully
-    rm -f "$write_test_file"
-  else
-    err "No rights to write to the directory '$DATABASE_DIRECTORY'!"
-    exit 1
-  fi
-
-  # Checking the existence of a configuration file
-  if [ ! -f "$CONFIG_FILE" ]; then
-    err "The configuration file '$CONFIG_FILE' was not found!"
-    exit 1
-  fi
-
-  info "The configuration file '$CONFIG_FILE' was found."
 
   # Pre-reading full config
   geo_ip_config=$(cat "$CONFIG_FILE")
