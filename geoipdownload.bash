@@ -129,12 +129,18 @@ parse_args() {
   eval set -- "$options"
 
   while true; do
-    case "$1" in
+    case "${1:-}" in
       -f|--config-file)
+        if [[ -z "${2:-}" || "$2" == -* || "$2" == --* ]]; then
+          break
+        fi
         CONFIG_FILE="$2"
         shift 2
         ;;
       -d|--database-directory)
+        if [[ -z "${2:-}" || "$2" == -* || "$2" == --* ]]; then
+          break
+        fi
         DATABASE_DIRECTORY="$2"
         shift 2
         ;;
@@ -148,6 +154,9 @@ parse_args() {
         ;;
       --)
         shift
+        break
+        ;;
+      "")
         break
         ;;
       *)
