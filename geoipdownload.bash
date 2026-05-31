@@ -34,7 +34,7 @@ readonly CURL_MAX_TIME=60
 #
 # Any message function template
 #
-mess() {
+message() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
 } # mess()
 
@@ -42,16 +42,18 @@ mess() {
 # Error message
 #
 err() {
-  local mess=$(mess "[ERROR]" "$*")
-  echo "${mess}"  >&2
+  local msg
+  msg=$(message "[ERROR]" "$*")
+  echo "${msg}"  >&2
 } # err()
 
 #
 # Info message
 #
 info() {
-  local mess=$(mess "[INFO] " "$*")
-  echo "${mess}" >&2
+  local msg
+  msg=$(message "[INFO] " "$*")
+  echo "${msg}" >&2
 } # info()
 
 #
