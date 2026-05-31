@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
 
+#
+# Download MaxMind GeoIP databases listed in GeoIP.conf into the current
+# directory.
+#
+# The script expects GeoIP.conf in the working directory and writes the
+# downloaded .mmdb files there.
+#
+# Analog for geoipupdate
+# https://dev.maxmind.com/geoip/updating-databases/
+# https://github.com/maxmind/geoipupdate
+#
+# Expected GeoIP.conf format:
+#  LicenseKey YOUR_LICENSE_KEY
+#  EditionIDs GeoLite2-City GeoLite2-Country
+#
+
 # Strict mode
 set -o errexit
 set -o nounset
 set -o pipefail
-
-# Analog for geoipupdate
-# https://dev.maxmind.com/geoip/updating-databases/
-# https://github.com/maxmind/geoipupdate
 
 # Will be working in current directory
 TargetDir=$(pwd)
