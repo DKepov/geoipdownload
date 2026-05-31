@@ -32,13 +32,13 @@ CURL_CONNECT_TIMEOUT=5
 CURL_MAX_TIME=60
 
 # Will be working in current directory
-TargetDir=$(pwd)
+target_dir=$(pwd)
 
-cd "${TargetDir}"
+cd "${target_dir}"
 
 # The -w flag verifies the existence of the object and the availability of write permissions
-if [ ! -w "$TargetDir" ]; then
-  echo "Error: No rights to write to the directory '$TargetDir'!" >&2
+if [ ! -w "$target_dir" ]; then
+  echo "Error: No rights to write to the directory '$target_dir'!" >&2
   exit 1
 fi
 
@@ -47,7 +47,7 @@ if touch .write_test 2>/dev/null; then
   # Deleting it if it was created successfully
   rm -f .write_test
 else
-  echo "Error: No rights to write to the directory '$TargetDir'!" >&2
+  echo "Error: No rights to write to the directory '$target_dir'!" >&2
   exit 1
 fi
 
@@ -60,16 +60,16 @@ fi
 echo "Info: The configuration file '$GEOIP_CONF_NAME' was found."
 
 # Pre-reading full config
-GeoIPConfig=$(cat "$GEOIP_CONF_NAME")
+geo_ip_config=$(cat "$GEOIP_CONF_NAME")
 
 # Getting the License Key
 
-LicenseKeyVar=$(echo "$GeoIPConfig" | grep -oP '^LicenseKey\s+\K\S+')
+license_key_var=$(echo "$geo_ip_config" | grep -oP '^LicenseKey\s+\K\S+')
 
-LicenseKey=$LicenseKeyVar
+license_key=$license_key_var
 
 # Checking the existence of the 'LicenseKey' in the configuration file
-if [ -z "$LicenseKey" ]; then
+if [ -z "$license_key" ]; then
   echo "Error: The 'LicenseKey' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
   exit 1
 fi
@@ -79,27 +79,27 @@ echo "Info: The license key has been successfully read."
 # Getting the EditionIDs GeoIP Bases
 # Making List of GeoIP Bases
 
-#declare -a EditionIDs=(
+#declare -a edition_ids=(
 #  "GeoLite2-ASN"
 #  "GeoLite2-City"
 #  "GeoLite2-Country"
 #)
 
-EditionIDsVar=$(echo "$GeoIPConfig" | grep -Po "(?<=EditionIDs\s).*")
+edition_ids_var=$(echo "$geo_ip_config" | grep -Po "(?<=EditionIDs\s).*")
 
 # Checking the existence of the 'EditionIDs' in the configuration file
-if [ -z "$EditionIDsVar" ]; then
+if [ -z "$edition_ids_var" ]; then
   echo "Error: The 'EditionIDs' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
   exit 1
 fi
 
-declare -a EditionIDs
-read -ra EditionIDs <<< "$EditionIDsVar";
+declare -a edition_ids
+read -ra edition_ids <<< "$edition_ids_var";
 
-EditionIDsCount=${#EditionIDs[@]}
-EditionIDsLine=$(printf "'%s' " "${EditionIDs[@]}")
-EditionIDsLine=${EditionIDsLine% }
-echo "Info: Download databases ${EditionIDsCount} found: (${EditionIDsLine})"
+edition_ids_count=${#edition_ids[@]}
+edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
+edition_ids_line=${edition_ids_line% }
+echo "Info: Download databases ${edition_ids_count} found: (${edition_ids_line})"
 
 # Permanent link for downloading files
 
@@ -108,19 +108,19 @@ echo "Info: Starting the database download cycle..."
 # Walking through the array
 # And downloading database in current directory
 
-for EditionID in "${EditionIDs[@]}"
+for edition_id in "${edition_ids[@]}"
 do
 
-  echo "Info: Current base is: '$EditionID'"
+  echo "Info: Current base is: '$edition_id'"
 
-  EditionIDArchive="${EditionID}.mmdb.gz"
-  EditionIDBase="${EditionID}.mmdb"
+  edition_id_archive="${edition_id}.mmdb.gz"
+  edition_id_base="${edition_id}.mmdb"
 
   # Replacing tags to real variables
 
-  EditionDownloadLink=$DOWNLOAD_URL_TEMPLATE
-  EditionDownloadLink="${EditionDownloadLink/EDITION_ID/$EditionID}"
-  EditionDownloadLink="${EditionDownloadLink/LICENSE_KEY/$LicenseKey}"
+  edition_download_link=$DOWNLOAD_URL_TEMPLATE
+  edition_download_link="${edition_download_link/EDITION_ID/$edition_id}"
+  edition_download_link="${edition_download_link/LICENSE_KEY/$license_key}"
 
   # Downloading Bases
 
@@ -131,20 +131,20 @@ do
   # --fail : Return an error code if the server responds with 404, 500, etc.
   # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
   # --max-time 30 : General limit time to download one file (optional, for security reasons)
-  curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$EditionDownloadLink" --output "$EditionIDArchive"
+  curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$edition_download_link" --output "$edition_id_archive"
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
-  CurlExitCode=$?
+  curl_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [ "$CurlExitCode" -ne 0 ]; then
-      echo "Error: Curl ended with the code: $CurlExitCode"
-      if [ "$CurlExitCode" -eq 28 ]; then
+  if [ "$curl_exit_code" -ne 0 ]; then
+      echo "Error: Curl ended with the code: $curl_exit_code"
+      if [ "$curl_exit_code" -eq 28 ]; then
           echo "Error: The timeout has expired for Curl"
-      elif [ "$CurlExitCode" -eq 22 ]; then
+      elif [ "$curl_exit_code" -eq 22 ]; then
           echo "Error: The server returned an HTTP error (for example, 404 or 403 or 500)"
-      elif [ "$CurlExitCode" -eq 23 ]; then
+      elif [ "$curl_exit_code" -eq 23 ]; then
           echo "Error: Error writing the file to disk."
       fi
       exit 1
@@ -152,14 +152,14 @@ do
 
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "gzip compressed data"
-  if ! file "$EditionIDArchive" | grep -q "gzip compressed data"; then
-    echo "Error: MaxMind server error when downloading '$EditionID':" >&2
+  if ! file "$edition_id_archive" | grep -q "gzip compressed data"; then
+    echo "Error: MaxMind server error when downloading '$edition_id':" >&2
     # Output the error text (for example: "Invalid license key")
-    EditionIDArchiveError=$(cat "$EditionIDArchive")
-    echo "Error: $EditionIDArchiveError" >&2
+    edition_id_archive_error=$(cat "$edition_id_archive")
+    echo "Error: $edition_id_archive_error" >&2
     # Delete temporary downloading File
     echo "Info: Temporary files deleted ..."
-    rm -f "$EditionIDArchive"
+    rm -f "$edition_id_archive"
     exit 1
   fi
 
@@ -169,31 +169,31 @@ do
 
   echo "Info: Search for the path of the database file inside the archive..."
 
-  EditionIDTargetPath=$(tar -tf "$EditionIDArchive" | grep "$EditionIDBase")
+  edition_id_target_path=$(tar -tf "$edition_id_archive" | grep "$edition_id_base")
 
   # Extracting the final file from the archive
 
   echo "Info: Unpacking the database file..."
 
-  tar -zxf "$EditionIDArchive" "$EditionIDTargetPath"
+  tar -zxf "$edition_id_archive" "$edition_id_target_path"
 
   # Moving the destination file to the current directory
 
   echo "Info: Moving the file to the current directory..."
 
-  mv "$EditionIDTargetPath" "$EditionIDBase"
+  mv "$edition_id_target_path" "$edition_id_base"
 
   # Delete temporary Extractiong directory
 
   echo "Info: Clearing temporary files and folders..."
 
-  rm -rf "$(dirname "$EditionIDTargetPath")"
+  rm -rf "$(dirname "$edition_id_target_path")"
 
   # Delete temporary downloading Archives
 
-  rm -f "$EditionIDArchive"
+  rm -f "$edition_id_archive"
 
-  echo "Info: The $EditionID database has been updated."
+  echo "Info: The $edition_id database has been updated."
 
 done
 
