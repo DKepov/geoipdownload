@@ -113,8 +113,8 @@ do
 
   echo "Info: Current base is: '$EditionID'"
 
-  EditionIDArchive=$EditionID.mmdb.gz
-  EditionIDBase=$EditionID.mmdb
+  EditionIDArchive="${EditionID}.mmdb.gz"
+  EditionIDBase="${EditionID}.mmdb"
 
   # Replacing tags to real variables
 
