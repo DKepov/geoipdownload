@@ -24,6 +24,13 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+
+# Constants
+GEOIP_CONF_NAME='GeoIP.conf'
+DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
+CURL_CONNECT_TIMEOUT=5
+CURL_MAX_TIME=60
+
 # Will be working in current directory
 TargetDir=$(pwd)
 
@@ -44,18 +51,16 @@ else
   exit 1
 fi
 
-GeoIPConfName="GeoIP.conf"
-
 # Checking the existence of a configuration file
-if [ ! -f "$GeoIPConfName" ]; then
-  echo "Error: The configuration file '$GeoIPConfName' was not found!" >&2
+if [ ! -f "$GEOIP_CONF_NAME" ]; then
+  echo "Error: The configuration file '$GEOIP_CONF_NAME' was not found!" >&2
   exit 1
 fi
 
-echo "Info: The configuration file '$GeoIPConfName' was found."
+echo "Info: The configuration file '$GEOIP_CONF_NAME' was found."
 
 # Pre-reading full config
-GeoIPConfig=$(cat "$GeoIPConfName")
+GeoIPConfig=$(cat "$GEOIP_CONF_NAME")
 
 # Getting the License Key
 
@@ -65,7 +70,7 @@ LicenseKey=$LicenseKeyVar
 
 # Checking the existence of the 'LicenseKey' in the configuration file
 if [ -z "$LicenseKey" ]; then
-  echo "Error: The 'LicenseKey' parameter is empty or missing in '$GeoIPConfName'!" >&2
+  echo "Error: The 'LicenseKey' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
   exit 1
 fi
 
@@ -84,7 +89,7 @@ EditionIDsVar=$(echo "$GeoIPConfig" | grep -Po "(?<=EditionIDs\s).*")
 
 # Checking the existence of the 'EditionIDs' in the configuration file
 if [ -z "$EditionIDsVar" ]; then
-  echo "Error: The 'EditionIDs' parameter is empty or missing in '$GeoIPConfName'!" >&2
+  echo "Error: The 'EditionIDs' parameter is empty or missing in '$GEOIP_CONF_NAME'!" >&2
   exit 1
 fi
 
@@ -97,8 +102,6 @@ EditionIDsLine=${EditionIDsLine% }
 echo "Info: Download databases ${EditionIDsCount} found: (${EditionIDsLine})"
 
 # Permanent link for downloading files
-
-DownloadLink="https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz"
 
 echo "Info: Starting the database download cycle..."
 
@@ -115,7 +118,7 @@ do
 
   # Replacing tags to real variables
 
-  EditionDownloadLink=$DownloadLink
+  EditionDownloadLink=$DOWNLOAD_URL_TEMPLATE
   EditionDownloadLink="${EditionDownloadLink/EDITION_ID/$EditionID}"
   EditionDownloadLink="${EditionDownloadLink/LICENSE_KEY/$LicenseKey}"
 
@@ -128,7 +131,7 @@ do
   # --fail : Return an error code if the server responds with 404, 500, etc.
   # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
   # --max-time 30 : General limit time to download one file (optional, for security reasons)
-  curl -sS --connect-timeout 5 --max-time 60 "$EditionDownloadLink" --output "$EditionIDArchive"
+  curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$EditionDownloadLink" --output "$EditionIDArchive"
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
