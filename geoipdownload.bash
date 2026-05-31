@@ -196,9 +196,10 @@ main() {
   fi
 
   # We are trying to create a hidden test file.
-  if touch .write_test 2>/dev/null; then
+  write_test_file="${target_dir}/.write_test"
+  if touch "$write_test_file" 2>/dev/null; then
     # Deleting it if it was created successfully
-    rm -f .write_test
+    rm -f "$write_test_file"
   else
     err "No rights to write to the directory '$target_dir'!"
     exit 1
