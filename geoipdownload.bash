@@ -42,7 +42,7 @@ mess() {
 # Error message
 #
 err() {
-  mess=$(mess "[ERROR]" "$*")
+  local mess=$(mess "[ERROR]" "$*")
   echo "${mess}"  >&2
 } # err()
 
@@ -50,7 +50,7 @@ err() {
 # Info message
 #
 info() {
-  mess=$(mess "[INFO] " "$*")
+  local mess=$(mess "[INFO] " "$*")
   echo "${mess}" >&2
 } # info()
 
