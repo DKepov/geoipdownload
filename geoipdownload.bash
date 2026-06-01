@@ -415,6 +415,8 @@ check_database_archive() {
     exit 1
   fi
 
+  info "Downloading the database archive from the MaxMind server is successfully"
+
 } # check_database_archive()
 
 #
@@ -473,8 +475,6 @@ main() {
 
     # Checking for archive database on valid type
     check_database_archive "${archive_name}"
-
-    info "The archive has been downloaded successfully."
 
     # Getting the path to the Destination file
 
