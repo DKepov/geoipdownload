@@ -318,7 +318,7 @@ main() {
   cd "${DATABASE_DIRECTORY}"
 
   # Reading Licence name for downloading
-  mapfile -t license_key < <(read_license_key "${CONFIG_FILE}")
+  license_key=$(read_license_key "${CONFIG_FILE}")
 
   # Reading Database names for downloading
   mapfile -t edition_ids < <(read_edition_ids "${CONFIG_FILE}")
