@@ -421,6 +421,20 @@ check_database_archive() {
 
 } # check_database_archive()
 
+# Delete database archive
+#
+# Deleting for archive database
+# We display errors and information messages inside
+#
+delete_database_archive() {
+
+  local database_directory="$1"
+  local archive_name="$2"
+
+  rm -f "${database_directory}/${archive_name}"
+
+} # delete_database_archive()
+
 #
 # Extract database from archive
 #
@@ -442,8 +456,6 @@ extract_database_from_archive() {
   fi
 
   tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}"
-
-  rm -f "${database_directory}/${archive_name}"
 
 } # extract_database_from_archive()
 
@@ -506,6 +518,9 @@ main() {
 
     # Extracting database from archive into single database file
     extract_database_from_archive "${DATABASE_DIRECTORY}" "${archive_name}" "${database_name}"
+
+    # Deleting for archive database
+    delete_database_archive "${DATABASE_DIRECTORY}" "${archive_name}"
 
     info "The '${edition_id}' database has been updated."
 
