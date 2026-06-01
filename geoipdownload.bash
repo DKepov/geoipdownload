@@ -316,6 +316,40 @@ build_download_url() {
 } # build_download_url()
 
 #
+# Build archive name
+#
+# Building archive name for current database
+# We display errors and information messages inside
+#
+build_archive_name() {
+
+    local edition_id="$1"
+    local edition_id_archive
+
+    edition_id_archive="${edition_id}.mmdb.gz"
+
+    printf '%s' "${edition_id_archive}"
+
+} # build_archive_name()
+
+#
+# Build database name
+#
+# Building database name for current database
+# We display errors and information messages inside
+#
+build_database_name() {
+
+    local edition_id="$1"
+    local edition_id_database
+
+    edition_id_database="${edition_id}.mmdb"
+
+    printf '%s' "${edition_id_database}"
+
+} # build_archive_name()
+
+#
 # Main function
 #
 main() {
@@ -324,6 +358,8 @@ main() {
   local edition_ids
   local edition_id
   local download_url
+  local archive_name
+  local database_name
 
   # Parsing of arguments
   parse_args "$@"
@@ -355,11 +391,14 @@ main() {
 
     info "The current database is: '$edition_id'"
 
-    edition_id_archive="${edition_id}.mmdb.gz"
-    edition_id_base="${edition_id}.mmdb"
-
     # Building download url for current database
     download_url="$(build_download_url "${edition_id}" "${license_key}")"
+
+    # Building archive name for current database
+    archive_name="$(build_archive_name "${edition_id}")"
+
+    # Building database name for current database
+    database_name="$(build_database_name "${edition_id}")"
 
     # Downloading Bases
 
@@ -370,7 +409,7 @@ main() {
     # --fail : Return an error code if the server responds with 404, 500, etc.
     # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
     # --max-time 30 : General limit time to download one file (optional, for security reasons)
-    curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$download_url" --output "$edition_id_archive"
+    curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$download_url" --output "$archive_name"
 
     # Immediately save the curl return code to a variable
     # The $ variable? stores the status of the last executed command
@@ -391,14 +430,14 @@ main() {
 
     # Checking if the file has been downloaded, or is there an error from the api?
     # The file command checks the file header. A correct archive will return "gzip compressed data"
-    if ! file "$edition_id_archive" | grep -q "gzip compressed data"; then
+    if ! file "$archive_name" | grep -q "gzip compressed data"; then
       err "MaxMind server error when downloading '$edition_id':"
       # Output the error text (for example: "Invalid license key")
-      edition_id_archive_error=$(cat "$edition_id_archive")
+      edition_id_archive_error=$(cat "$archive_name")
       err "$edition_id_archive_error"
       # Delete temporary downloading File
       info "Temporary files deleted ..."
-      rm -f "$edition_id_archive"
+      rm -f "$archive_name"
       exit 1
     fi
 
@@ -408,19 +447,19 @@ main() {
 
     info "Search for the path of the database file inside the archive..."
 
-    edition_id_target_path=$(tar -tf "$edition_id_archive" | grep "$edition_id_base")
+    edition_id_target_path=$(tar -tf "$archive_name" | grep "$database_name")
 
     # Extracting the final file from the archive
 
     info "Unpacking the database file..."
 
-    tar -zxf "$edition_id_archive" "$edition_id_target_path"
+    tar -zxf "$archive_name" "$edition_id_target_path"
 
     # Moving the destination file to the current directory
 
     info "Moving the file to the current directory..."
 
-    mv "$edition_id_target_path" "$edition_id_base"
+    mv "$edition_id_target_path" "$database_name"
 
     # Delete temporary Extractiong directory
 
@@ -430,7 +469,7 @@ main() {
 
     # Delete temporary downloading Archives
 
-    rm -f "$edition_id_archive"
+    rm -f "$archive_name"
 
     info "The $edition_id database has been updated."
 
