@@ -499,9 +499,6 @@ main() {
   # Checking Directory on exists and writable
   check_directory_exists_and_writable "$DATABASE_DIRECTORY"
 
-  # Will be working in current directory
-  cd "${DATABASE_DIRECTORY}"
-
   # Reading Licence name for downloading
   license_key=$(read_license_key "${CONFIG_FILE}")
 
