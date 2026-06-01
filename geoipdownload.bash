@@ -323,9 +323,9 @@ main() {
   # Reading Database names for downloading
   mapfile -t edition_ids < <(read_edition_ids "${CONFIG_FILE}")
 
-  # Permanent link for downloading files
+  # In current point we are ready for downloading of databases
 
-  info "Starting the database download cycle..."
+  info "The databases downloading cycle is starting ..."
 
   # Walking through the array
   # And downloading database in current directory
@@ -333,7 +333,7 @@ main() {
   for edition_id in "${edition_ids[@]}"
   do
 
-    info "Current base is: '$edition_id'"
+    info "The current database is: '$edition_id'"
 
     edition_id_archive="${edition_id}.mmdb.gz"
     edition_id_base="${edition_id}.mmdb"
