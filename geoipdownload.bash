@@ -215,7 +215,7 @@ check_directory_exists_and_writable() {
   fi
 
   if [[ ! -w "$database_directory" ]]; then
-    err "The database directory "$database_directory" is not writable!"
+    err "The database directory '$database_directory' is not writable!"
     exit 1
   fi
 
@@ -225,7 +225,7 @@ check_directory_exists_and_writable() {
     # Deleting it if it was created successfully
     rm -f "$write_test_file"
   else
-    err "The database directory "$database_directory" is not writable!"
+    err "The database directory '$database_directory' is not writable!"
     exit 1
   fi
 
