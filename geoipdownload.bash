@@ -451,7 +451,10 @@ extract_database_from_archive() {
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  tar -tf "${archive_name}" 2> /dev/null | grep "${database_name}" 1> /dev/null 2>&1
+  tar -tf "${archive_name}" 2> /dev/null
+
+  # Immediately save the tar return code to a variable
+  # The $ variable? stores the status of the last executed command
   check_exit_code=$?
 
   if [ "$check_exit_code" -ne 0 ]; then
