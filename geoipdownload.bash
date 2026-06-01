@@ -429,8 +429,9 @@ check_database_archive() {
 #
 extract_database_from_archive() {
 
-  local archive_name="$1"
-  local database_name="$2"
+  local database_directory="$1"
+  local archive_name="$2"
+  local database_name="$3"
   local extracted_name
 
   extracted_name=$(tar -tf "$archive_name" | grep "$database_name")
@@ -440,9 +441,9 @@ extract_database_from_archive() {
       exit 1
   fi
 
-  tar -zxf "${archive_name}" "${database_name}"
+  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}"
 
-  rm -f "${archive_name}"
+  rm -f "${database_directory}/${archive_name}"
 
 } # extract_database_from_archive()
 
@@ -504,7 +505,7 @@ main() {
     check_database_archive "${DATABASE_DIRECTORY}" "${archive_name}"
 
     # Extracting database from archive into single database file
-    extract_database_from_archive "${archive_name}" "${database_name}"
+    extract_database_from_archive "${DATABASE_DIRECTORY}" "${archive_name}" "${database_name}"
 
     info "The '${edition_id}' database has been updated."
 
