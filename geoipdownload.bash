@@ -504,6 +504,8 @@ main() {
     # Extracting database from archive into single database file
     extract_database_from_archive "${archive_name}" "${database_name}"
 
+    info "The '${edition_id}' database has been updated."
+
   done
 
   info "All GeoIP databases have been successfully updated!"
