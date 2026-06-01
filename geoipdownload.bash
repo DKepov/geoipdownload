@@ -183,17 +183,19 @@ fi
 #
 check_config_exists() {
 
-  if [[ ! -f "$CONFIG_FILE" ]]; then
-    err "The configuration file '$CONFIG_FILE' not found!"
+  local conf_file="$1"
+
+  if [[ ! -f "$conf_file" ]]; then
+    err "The configuration file '$conf_file' not found!"
     exit 1
   fi
 
-  if [[ ! -r "$CONFIG_FILE" ]]; then
-    err "The configuration file '$CONFIG_FILE' cannot be read!"
+  if [[ ! -r "$conf_file" ]]; then
+    err "The configuration file '$conf_file' cannot be read!"
     exit 1
   fi
 
-  info "The configuration file '$CONFIG_FILE' found and ready for use."
+  info "The configuration file '$conf_file' found and ready for use."
 
 } # check_config_exists()
 
@@ -205,27 +207,29 @@ check_config_exists() {
 #
 check_directory_exists_and_writable() {
 
-  if [[ ! -d "$DATABASE_DIRECTORY" ]]; then
-    err "The database directory '$CONFIG_FILE' not found!"
+  local database_directory="$1"
+
+  if [[ ! -d "$database_directory" ]]; then
+    err "The database directory '$database_directory' not found!"
     exit 1
   fi
 
-  if [[ ! -w "$DATABASE_DIRECTORY" ]]; then
-    err "The database directory "$DATABASE_DIRECTORY" is not writable!"
+  if [[ ! -w "$database_directory" ]]; then
+    err "The database directory "$database_directory" is not writable!"
     exit 1
   fi
 
   # We are trying to create a hidden test file
-  write_test_file="${DATABASE_DIRECTORY}/.write_test"
+  write_test_file="${database_directory}/.write_test"
   if touch "$write_test_file" 2>/dev/null; then
     # Deleting it if it was created successfully
     rm -f "$write_test_file"
   else
-    err "The database directory "$DATABASE_DIRECTORY" is not writable!"
+    err "The database directory "$database_directory" is not writable!"
     exit 1
   fi
 
-  info "The database directory '$DATABASE_DIRECTORY' found and ready for use."
+  info "The database directory '$database_directory' found and ready for use."
 
 } # check_directory_exists_and_writable()
 
