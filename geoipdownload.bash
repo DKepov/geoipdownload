@@ -297,6 +297,25 @@ read_edition_ids() {
 } # read_edition_ids()
 
 #
+# Build download url
+#
+# Build download url for current database
+# We display errors and information messages inside
+#
+build_download_url() {
+
+  local edition_id="$1"
+  local license_key="$2"
+  local url="${DOWNLOAD_URL_TEMPLATE}"
+
+  url="${url/EDITION_ID/${edition_id}}"
+  url="${url/LICENSE_KEY/${license_key}}"
+
+  printf '%s' "${url}"
+
+} # build_download_url()
+
+#
 # Main function
 #
 main() {
@@ -304,6 +323,7 @@ main() {
   local license_key
   local edition_ids
   local edition_id
+  local download_url
 
   # Parsing of arguments
   parse_args "$@"
@@ -338,11 +358,8 @@ main() {
     edition_id_archive="${edition_id}.mmdb.gz"
     edition_id_base="${edition_id}.mmdb"
 
-    # Replacing tags to real variables
-
-    edition_download_link=$DOWNLOAD_URL_TEMPLATE
-    edition_download_link="${edition_download_link/EDITION_ID/$edition_id}"
-    edition_download_link="${edition_download_link/LICENSE_KEY/$license_key}"
+    # Build download url for current database
+    download_url="$(build_download_url "${edition_id}" "${license_key}")"
 
     # Downloading Bases
 
@@ -353,7 +370,7 @@ main() {
     # --fail : Return an error code if the server responds with 404, 500, etc.
     # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
     # --max-time 30 : General limit time to download one file (optional, for security reasons)
-    curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$edition_download_link" --output "$edition_id_archive"
+    curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$download_url" --output "$edition_id_archive"
 
     # Immediately save the curl return code to a variable
     # The $ variable? stores the status of the last executed command
