@@ -85,7 +85,7 @@ For full documentation of the configuration file, see the official reference:
 This is what a successful database update looks like.
 
 ```bash
-dkepov@dkepov:/current_project$ ./geoipdownload.bash -f /etc/GeoIP.conf -d /usr/share/GeoIP -vvv
+dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP -vvv
 [2026-06-23T03:05:36+0000]: [INFO]  The configuration file 'GeoIP.conf' found and ready for use.
 [2026-06-23T03:05:36+0000]: [INFO]  The database directory '.' found and ready for use.
 [2026-06-23T03:05:36+0000]: [INFO]  The 'LicenseKey' has been successfully read.
