@@ -71,7 +71,7 @@ info() {
 #
 usage() {
   cat <<'EOF'
-Download MaxMind GeoIP databases listed in GeoIP.conf 
+Download MaxMind GeoIP databases listed in GeoIP.conf
 into the current directory.
 
 The script expects GeoIP.conf in the working directory and writes the
@@ -93,12 +93,12 @@ PARAMS (required):
 
   -f, --config-file             Path to GeoIP.conf.
                                 This is required.
-                                See GeoIP.conf and its documentation for 
+                                See GeoIP.conf and its documentation for
                                 more information.
 
   -d, --database-directory      Path to Directory where .mmdb files will be written.
                                 This is required.
-                                For install databases to a custom directory 
+                                For install databases to a custom directory
                                 you need check documentation.
 
 EOF
@@ -119,7 +119,7 @@ parse_args() {
   # Validation of the argument string via getopt
   # --options sets short flags, --longoptions sets long flags.
   # "$@" passes the current script arguments.
-  
+
   # Configuring the getopt utility
   short_options='f:d:vh'
   long_options='config-file:,database-directory:,verbose,vvv,help'
