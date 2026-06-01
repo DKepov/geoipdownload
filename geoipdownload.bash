@@ -340,12 +340,12 @@ build_archive_name() {
 #
 build_database_name() {
 
-    local edition_id="$1"
-    local edition_id_database
+  local edition_id="$1"
+  local edition_id_database
 
-    edition_id_database="${edition_id}.mmdb"
+  edition_id_database="${edition_id}.mmdb"
 
-    printf '%s' "${edition_id_database}"
+  printf '%s' "${edition_id_database}"
 
 } # build_archive_name()
 
