@@ -299,7 +299,7 @@ read_edition_ids() {
 #
 # Build download url
 #
-# Build download url for current database
+# Building download url for current database
 # We display errors and information messages inside
 #
 build_download_url() {
