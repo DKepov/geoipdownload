@@ -358,7 +358,7 @@ main() {
     edition_id_archive="${edition_id}.mmdb.gz"
     edition_id_base="${edition_id}.mmdb"
 
-    # Build download url for current database
+    # Building download url for current database
     download_url="$(build_download_url "${edition_id}" "${license_key}")"
 
     # Downloading Bases
