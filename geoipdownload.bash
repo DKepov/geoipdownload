@@ -392,6 +392,29 @@ download_database_archive() {
 } # download_database_archive()
 
 #
+# Check database archive
+#
+# Checking for archive database on valid type
+# We display errors and information messages inside
+#
+check_database_archive() {
+
+  local archive_name="$1"
+  local archive_error=""
+
+  # Checking if the file has been downloaded, or is there an error from the api?
+  # The file command checks the file header. A correct archive will return "gzip compressed data"
+  if ! file "${archive_name}" | grep -q "gzip compressed data"; then
+    err "MaxMind server error when downloading '$archive_name':"
+    # Output the error text (for example: "Invalid license key")
+    archive_error=$(cat "$archive_name")
+    err "$archive_error"
+    exit 1
+  fi
+
+} # check_database_archive()
+
+#
 # Main function
 #
 main() {
@@ -449,18 +472,8 @@ main() {
     # Downloading archive database from download_url into archive_name
     download_database_archive "${download_url}" "${archive_name}"
 
-    # Checking if the file has been downloaded, or is there an error from the api?
-    # The file command checks the file header. A correct archive will return "gzip compressed data"
-    if ! file "$archive_name" | grep -q "gzip compressed data"; then
-      err "MaxMind server error when downloading '$edition_id':"
-      # Output the error text (for example: "Invalid license key")
-      edition_id_archive_error=$(cat "$archive_name")
-      err "$edition_id_archive_error"
-      # Delete temporary downloading File
-      info "Temporary files deleted ..."
-      rm -f "$archive_name"
-      exit 1
-    fi
+    # Checking for archive database on valid type
+    check_database_archive "${archive_name}"
 
     info "The archive has been downloaded successfully."
 
