@@ -361,6 +361,9 @@ download_database_archive() {
   local archive_name="$2"
   local curl_exit_code=0
 
+  # Downloading Bases
+  info "Downloading the database archive from the MaxMind server ..."
+
   # CURL settings:
   # -sS : Hide the progress bar, but show a network error if it happens
   # --fail : Return an error code if the server responds with 404, 500, etc.
@@ -464,10 +467,6 @@ main() {
 
     # Building database name for current database
     database_name="$(build_database_name "${edition_id}")"
-
-    # Downloading Bases
-
-    info "Download the archive from the MaxMind server..."
 
     # Downloading archive database from download_url into archive_name
     download_database_archive "${download_url}" "${archive_name}"
