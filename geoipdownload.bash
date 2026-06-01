@@ -445,15 +445,16 @@ extract_database_from_archive() {
   local database_directory="$1"
   local archive_name="$2"
   local database_name="$3"
-  local extracted_name
-  local tar_exit_code=0
+  local check_exit_code=0
+  local extract_exit_code=0
 
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  extracted_name=$(tar -tf "${archive_name}" | grep "${database_name}")
+  tar -tf "${archive_name}" 2> /dev/null | grep "${database_name}" 1> /dev/null 2>&1
+  check_exit_code=$?
 
-  if [ -z "${extracted_name}"  ]; then
+  if [ "$check_exit_code" -ne 0 ]; then
       err "Database archive does not contain '${database_name}' or the archive is corrupted".
       exit 1
   fi
@@ -462,12 +463,12 @@ extract_database_from_archive() {
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
-  tar_exit_code=$?
+  extract_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [ "$tar_exit_code" -ne 0 ]; then
-      err "Tar ended with the code: $tar_exit_code"
-      if [ "$tar_exit_code" -eq 2 ]; then
+  if [ "$extract_exit_code" -ne 0 ]; then
+      err "Tar ended with the code: $extract_exit_code"
+      if [ "$extract_exit_code" -eq 2 ]; then
           err "The file was not found in the archive or the archive is corrupted"
       fi
       exit 1
