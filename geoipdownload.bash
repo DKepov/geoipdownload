@@ -234,9 +234,76 @@ check_directory_exists_and_writable() {
 } # check_directory_exists_and_writable()
 
 #
+# Read license key
+#
+# Reading license key to variable
+# We display errors and information messages inside
+#
+read_license_key() {
+
+  local conf_file="$1"
+  local license_key
+
+  license_key=$(grep -oP '^LicenseKey\s+\K\S+' "$conf_file")
+
+  # Checking the existence of the 'LicenseKey' in the configuration file
+  if [ -z "$license_key" ]; then
+    err "The 'LicenseKey' parameter is empty or missing in '$conf_file'!"
+    exit 1
+  fi
+
+  info "The 'LicenseKey' has been successfully read."
+
+  printf '%s' "${license_key}"
+
+} # read_license_key()
+
+#
+# Read edition ids
+#
+# Reading edition ids to array variable
+# We display errors and information messages inside
+#
+read_edition_ids() {
+
+  local conf_file="$1"
+  local edition_ids
+  local edition_ids_line
+
+  edition_ids_line=$(grep -Po "(?<=EditionIDs\s).*" "$conf_file")
+
+  # Checking the existence of the 'EditionIDs' in the configuration file
+  if [ -z "$edition_ids_line" ]; then
+    err "The 'EditionIDs' parameter is empty or missing in '$conf_file'!"
+    exit 1
+  fi
+
+  info "The 'EditionIDs' has been successfully read."
+
+  #declare -a edition_ids=(
+  #  "GeoLite2-ASN"
+  #  "GeoLite2-City"
+  #  "GeoLite2-Country"
+  #)
+
+  read -ra edition_ids <<< "$edition_ids_line";
+
+  edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
+  edition_ids_line=${edition_ids_line% }
+  info "The following databases were found for download: (${edition_ids_line})"
+
+  printf '%s\n' "${edition_ids[@]}"
+
+} # read_edition_ids()
+
+#
 # Main function
 #
 main() {
+
+  local license_key
+  local edition_ids
+  local edition_id
 
   # Parsing of arguments
   parse_args "$@"
@@ -250,47 +317,11 @@ main() {
   # Will be working in current directory
   cd "${DATABASE_DIRECTORY}"
 
-  # Pre-reading full config
-  geo_ip_config=$(cat "$CONFIG_FILE")
+  # Reading Licence name for downloading
+  mapfile -t license_key < <(read_license_key "${CONFIG_FILE}")
 
-  # Getting the License Key
-
-  license_key_var=$(echo "$geo_ip_config" | grep -oP '^LicenseKey\s+\K\S+')
-
-  license_key=$license_key_var
-
-  # Checking the existence of the 'LicenseKey' in the configuration file
-  if [ -z "$license_key" ]; then
-    err "The 'LicenseKey' parameter is empty or missing in '$CONFIG_FILE'!"
-    exit 1
-  fi
-
-  info "The license key has been successfully read."
-
-  # Getting the EditionIDs GeoIP Bases
-  # Making List of GeoIP Bases
-
-  #declare -a edition_ids=(
-  #  "GeoLite2-ASN"
-  #  "GeoLite2-City"
-  #  "GeoLite2-Country"
-  #)
-
-  edition_ids_var=$(echo "$geo_ip_config" | grep -Po "(?<=EditionIDs\s).*")
-
-  # Checking the existence of the 'EditionIDs' in the configuration file
-  if [ -z "$edition_ids_var" ]; then
-    err "The 'EditionIDs' parameter is empty or missing in '$CONFIG_FILE'!"
-    exit 1
-  fi
-
-  declare -a edition_ids
-  read -ra edition_ids <<< "$edition_ids_var";
-
-  edition_ids_count=${#edition_ids[@]}
-  edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
-  edition_ids_line=${edition_ids_line% }
-  info "Download databases ${edition_ids_count} found: (${edition_ids_line})"
+  # Reading Database names for downloading
+  mapfile -t edition_ids < <(read_edition_ids "${CONFIG_FILE}")
 
   # Permanent link for downloading files
 
