@@ -445,19 +445,25 @@ extract_database_from_archive() {
   local database_directory="$1"
   local archive_name="$2"
   local database_name="$3"
+  local files
   local check_exit_code=0
   local extract_exit_code=0
 
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  tar -tf "${archive_name}" 2> /dev/null
+  files=$(tar -tf "${archive_name}" 2> /dev/null)
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
   check_exit_code=$?
 
   if [ "$check_exit_code" -ne 0 ]; then
+      err "Database archive does not contain '${database_name}' or the archive is corrupted".
+      exit 1
+  fi
+
+  if [[ ! "$files" =~ ${database_name} ]]; then
       err "Database archive does not contain '${database_name}' or the archive is corrupted".
       exit 1
   fi
