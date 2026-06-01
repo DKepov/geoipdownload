@@ -46,7 +46,7 @@ Changes to the program:
 
 - Copy the program to another location
 - Open the (copied) program file
-- Replace the URL in the `DOWNLOAD_URL_TEMPLATE` constant with the following `http://localhost:8888/EDITION_ID.mmdb.gz`
+- Replace the URL in the `DOWNLOAD_URL_TEMPLATE` constant with the following `http://localhost:8080/EDITION_ID.mmdb.tar.gz`
 - Save changes
 
 Note that for simplicity, we're changing the URL significantly.
@@ -61,7 +61,7 @@ It's best to follow these steps:
 - `mkdir check`
 - `cp ./../GeoIP.conf ./check/GeoIP.conf`
 - `cp ./../geoipdownload.bash ./check/geoipdownload.bash`
-- `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8888/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload.bash`
+- `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload.bash`
 - `cd check`
 - `./geoipdownload.bash -f GeoIP.conf -d . -v`
 
