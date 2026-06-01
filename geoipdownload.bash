@@ -24,7 +24,7 @@
 #
 
 # Strict mode
-set -o errexit
+#set -o errexit
 set -o nounset
 set -o pipefail
 
