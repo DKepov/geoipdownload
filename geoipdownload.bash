@@ -100,7 +100,6 @@ PARAMS (required):
                                 This is required.
                                 For install databases to a custom directory
                                 you need check documentation.
-
 EOF
 }
 
