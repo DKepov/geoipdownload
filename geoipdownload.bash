@@ -373,7 +373,7 @@ download_database_archive() {
     --connect-timeout "$CURL_CONNECT_TIMEOUT" \
     --max-time "$CURL_MAX_TIME" \
     --output "${database_directory}/$archive_name" \
-    "$download_url"
+    "$download_url" 2> /dev/null
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
