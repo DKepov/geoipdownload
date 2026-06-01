@@ -86,4 +86,4 @@ The MIT License (MIT). Please see [License File][license] for more information.
 ---
 
 [link-author]: https://github.com/dkepov
-[license]: LICENSE
+[license]: ../LICENSE
