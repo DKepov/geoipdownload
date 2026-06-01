@@ -433,7 +433,7 @@ extract_database_from_archive() {
 
   extracted_name=$(tar -tf "$archive_name" | grep "$database_name")
 
-  if [ -n "${extracted_name}"  ]; then
+  if [ ! -n "${extracted_name}"  ]; then
       err "Database archive does not contain '${database_name}'".
       exit 1
   fi
