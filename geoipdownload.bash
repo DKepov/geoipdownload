@@ -420,6 +420,31 @@ check_database_archive() {
 } # check_database_archive()
 
 #
+# Extract database from archive
+#
+# Extracting database from archive into single database file
+# We display errors and information messages inside
+#
+extract_database_from_archive() {
+
+  local archive_name="$1"
+  local database_name="$2"
+  local extracted_name
+
+  extracted_name=$(tar -tf "$archive_name" | grep "$database_name")
+
+  if [ -n "${extracted_name}"  ]; then
+      err "Database archive does not contain '${database_name}'".
+      exit 1
+  fi
+
+  tar -zxf "${archive_name}" "${database_name}"
+
+  rm -f "${archive_name}"
+
+} # extract_database_from_archive()
+
+#
 # Main function
 #
 main() {
@@ -476,35 +501,8 @@ main() {
     # Checking for archive database on valid type
     check_database_archive "${archive_name}"
 
-    # Getting the path to the Destination file
-
-    info "Search for the path of the database file inside the archive..."
-
-    edition_id_target_path=$(tar -tf "$archive_name" | grep "$database_name")
-
-    # Extracting the final file from the archive
-
-    info "Unpacking the database file..."
-
-    tar -zxf "$archive_name" "$edition_id_target_path"
-
-    # Moving the destination file to the current directory
-
-    info "Moving the file to the current directory..."
-
-    mv "$edition_id_target_path" "$database_name"
-
-    # Delete temporary Extractiong directory
-
-    info "Clearing temporary files and folders..."
-
-    rm -rf "$(dirname "$edition_id_target_path")"
-
-    # Delete temporary downloading Archives
-
-    rm -f "$archive_name"
-
-    info "The $edition_id database has been updated."
+    # Extracting database from archive into single database file
+    extract_database_from_archive "${archive_name}" "${database_name}"
 
   done
 
