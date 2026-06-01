@@ -403,12 +403,13 @@ download_database_archive() {
 #
 check_database_archive() {
 
-  local archive_name="$1"
+  local database_directory="$1"
+  local archive_name="$2"
   local archive_error=""
 
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "gzip compressed data"
-  if ! file "${archive_name}" | grep -q "gzip compressed data"; then
+  if ! file "${database_directory}/${archive_name}" | grep -q "gzip compressed data"; then
     err "MaxMind server error when downloading '$archive_name':"
     # Output the error text (for example: "Invalid license key")
     archive_error=$(cat "$archive_name")
@@ -500,7 +501,7 @@ main() {
     download_database_archive "${DATABASE_DIRECTORY}" "${download_url}" "${archive_name}"
 
     # Checking for archive database on valid type
-    check_database_archive "${archive_name}"
+    check_database_archive "${DATABASE_DIRECTORY}" "${archive_name}"
 
     # Extracting database from archive into single database file
     extract_database_from_archive "${archive_name}" "${database_name}"
