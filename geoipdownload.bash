@@ -323,12 +323,12 @@ build_download_url() {
 #
 build_archive_name() {
 
-    local edition_id="$1"
-    local edition_id_archive
+  local edition_id="$1"
+  local edition_id_archive
 
-    edition_id_archive="${edition_id}.mmdb.gz"
+  edition_id_archive="${edition_id}.mmdb.gz"
 
-    printf '%s' "${edition_id_archive}"
+  printf '%s' "${edition_id_archive}"
 
 } # build_archive_name()
 
