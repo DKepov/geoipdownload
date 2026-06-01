@@ -350,6 +350,48 @@ build_database_name() {
 } # build_archive_name()
 
 #
+# Download database archive
+#
+# Downloading archive database from download_url into archive_name
+# We display errors and information messages inside
+#
+download_database_archive() {
+
+  local download_url="$1"
+  local archive_name="$2"
+  local curl_exit_code=0
+
+  # CURL settings:
+  # -sS : Hide the progress bar, but show a network error if it happens
+  # --fail : Return an error code if the server responds with 404, 500, etc.
+  # --connect-timeout : Wait no more than X seconds to establish a connection
+  # --max-time : General limit time to download one file (optional, for security reasons)
+  curl -sS \
+    --connect-timeout "$CURL_CONNECT_TIMEOUT" \
+    --max-time "$CURL_MAX_TIME" \
+    --output "$archive_name" \
+    "$download_url"
+
+  # Immediately save the curl return code to a variable
+  # The $ variable? stores the status of the last executed command
+  curl_exit_code=$?
+
+  # Checking the variable with the Curl Code
+  if [ "$curl_exit_code" -ne 0 ]; then
+      err "Curl ended with the code: $curl_exit_code"
+      if [ "$curl_exit_code" -eq 28 ]; then
+          err "The timeout has expired for Curl"
+      elif [ "$curl_exit_code" -eq 22 ]; then
+          err "The server returned an HTTP error (for example, 404 or 403 or 500)"
+      elif [ "$curl_exit_code" -eq 23 ]; then
+          err "Error writing the file to disk."
+      fi
+      exit 1
+  fi
+
+} # download_database_archive()
+
+#
 # Main function
 #
 main() {
@@ -404,29 +446,8 @@ main() {
 
     info "Download the archive from the MaxMind server..."
 
-    # Сurl settings:
-    # -sS : Hide the progress bar, but show a network error if it happens
-    # --fail : Return an error code if the server responds with 404, 500, etc.
-    # --connect-timeout 5 : Wait no more than 5 seconds to establish a connection
-    # --max-time 30 : General limit time to download one file (optional, for security reasons)
-    curl -sS --connect-timeout "$CURL_CONNECT_TIMEOUT" --max-time "$CURL_MAX_TIME" "$download_url" --output "$archive_name"
-
-    # Immediately save the curl return code to a variable
-    # The $ variable? stores the status of the last executed command
-    curl_exit_code=$?
-
-    # Checking the variable with the Curl Code
-    if [ "$curl_exit_code" -ne 0 ]; then
-        err "Curl ended with the code: $curl_exit_code"
-        if [ "$curl_exit_code" -eq 28 ]; then
-            err "The timeout has expired for Curl"
-        elif [ "$curl_exit_code" -eq 22 ]; then
-            err "The server returned an HTTP error (for example, 404 or 403 or 500)"
-        elif [ "$curl_exit_code" -eq 23 ]; then
-            err "Error writing the file to disk."
-        fi
-        exit 1
-    fi
+    # Downloading archive database from download_url into archive_name
+    download_database_archive "${download_url}" "${archive_name}"
 
     # Checking if the file has been downloaded, or is there an error from the api?
     # The file command checks the file header. A correct archive will return "gzip compressed data"
