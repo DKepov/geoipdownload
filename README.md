@@ -80,6 +80,39 @@ EditionIDs GeoLite2-City GeoLite2-Country GeoLite2-ASN
 For full documentation of the configuration file, see the official reference:  
 [GeoIP.conf.md](https://github.com/maxmind/geoipupdate/blob/main/doc/GeoIP.conf.md)
 
+## The program works visually
+
+This is what a successful database update looks like.
+
+```bash
+dkepov@dkepov:/current_project$ ./geoipdownload.bash -f /etc/GeoIP.conf -d /usr/share/GeoIP -vvv
+[2026-06-23T03:05:36+0000]: [INFO]  The configuration file 'GeoIP.conf' found and ready for use.
+[2026-06-23T03:05:36+0000]: [INFO]  The database directory '.' found and ready for use.
+[2026-06-23T03:05:36+0000]: [INFO]  The 'LicenseKey' has been successfully read.
+[2026-06-23T03:05:36+0000]: [INFO]  The 'EditionIDs' has been successfully read.
+[2026-06-23T03:05:36+0000]: [INFO]  The following databases were found for download: ('GeoLite2-ASN' 'GeoLite2-City' 'GeoLite2-Country')
+[2026-06-23T03:05:36+0000]: [INFO]  The databases downloading cycle is starting ...
+[2026-06-23T03:05:36+0000]: [INFO]  The current database is: 'GeoLite2-ASN'
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server ...
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive ...
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  The 'GeoLite2-ASN' database has been updated.
+[2026-06-23T03:05:36+0000]: [INFO]  The current database is: 'GeoLite2-City'
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server ...
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive ...
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  The 'GeoLite2-City' database has been updated.
+[2026-06-23T03:05:36+0000]: [INFO]  The current database is: 'GeoLite2-Country'
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server ...
+[2026-06-23T03:05:36+0000]: [INFO]  Downloading the database archive from the MaxMind server is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive ...
+[2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive is successfully
+[2026-06-23T03:05:36+0000]: [INFO]  The 'GeoLite2-Country' database has been updated.
+[2026-06-23T03:05:36+0000]: [INFO]  All GeoIP databases have been successfully updated!
+```
+
 ## Useful MaxMind Resources
 
 - **[MaxMind GeoIP Portal](https://dev.maxmind.com/geoip/)** — Main page for GeoIP and GeoLite products, services, and documentation.
