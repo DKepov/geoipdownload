@@ -357,8 +357,9 @@ build_database_name() {
 #
 download_database_archive() {
 
-  local download_url="$1"
-  local archive_name="$2"
+  local database_directory="$1"
+  local download_url="$2"
+  local archive_name="$3"
   local curl_exit_code=0
 
   # Downloading Bases
@@ -372,7 +373,7 @@ download_database_archive() {
   curl -sS \
     --connect-timeout "$CURL_CONNECT_TIMEOUT" \
     --max-time "$CURL_MAX_TIME" \
-    --output "$archive_name" \
+    --output "${database_directory}/$archive_name" \
     "$download_url"
 
   # Immediately save the curl return code to a variable
@@ -496,7 +497,7 @@ main() {
     database_name="$(build_database_name "${edition_id}")"
 
     # Downloading archive database from download_url into archive_name
-    download_database_archive "${download_url}" "${archive_name}"
+    download_database_archive "${DATABASE_DIRECTORY}" "${download_url}" "${archive_name}"
 
     # Checking for archive database on valid type
     check_database_archive "${archive_name}"
