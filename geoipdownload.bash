@@ -458,7 +458,7 @@ extract_database_from_archive() {
       exit 1
   fi
 
-  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}"
+  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2> /dev/null
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
