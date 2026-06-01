@@ -60,10 +60,10 @@ It's best to follow these steps:
 - `cd test` (in the current directory)
 - `mkdir check`
 - `cp ./../GeoIP.conf ./check/GeoIP.conf`
-- `cp ./../geoipdownload.bash ./check/geoipdownload.bash`
-- `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload.bash`
+- `cp ./../geoipdownload ./check/geoipdownload`
+- `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload`
 - `cd check`
-- `./geoipdownload.bash -f GeoIP.conf -d . -v`
+- `./geoipdownload -f GeoIP.conf -d . -v`
 
 
 ## Original database files
