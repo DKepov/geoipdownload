@@ -326,7 +326,7 @@ build_archive_name() {
   local edition_id="$1"
   local edition_id_archive
 
-  edition_id_archive="${edition_id}.mmdb.gz"
+  edition_id_archive="${edition_id}.mmdb.tar.gz"
 
   printf '%s' "${edition_id_archive}"
 
