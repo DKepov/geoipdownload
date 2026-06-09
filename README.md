@@ -4,6 +4,8 @@
 
 A lightweight bash alternative to the official `geoipupdate` client from MaxMind.
 
+_Development of this program began even before the official client was released. It has now been finalized._
+
 # GeoIP Database Downloader
 
 Bash script for downloading and updating GeoIP/GeoLite MaxMind databases in the current directory.
