@@ -104,7 +104,7 @@ Usage: geoipdownload [FLAGS] [-f CONFIG_FILE] [-d TARGET_DIRECTORY]
 FLAGS:
 
   -h, --help                    Show this help message.
-  -v, --vvv, --verbose          Print informational and error messages.
+  -v, --verbose                 Print informational and error messages.
   -V, --version                 Current version of program.
 
 PARAMS (optional):
@@ -141,7 +141,7 @@ parse_and_default_args() {
 
   # Configuring the getopt utility
   short_options='f:d:vhV'
-  long_options='config-file:,database-directory:,verbose,vvv,help,version'
+  long_options='config-file:,database-directory:,verbose,help,version'
 
   # Important: we are suppressing the verification of unknown parameters with --quiet
   options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2>/dev/null || true
@@ -165,7 +165,7 @@ parse_and_default_args() {
         DATABASE_DIRECTORY="$2"
         shift 2
         ;;
-      -v|--vvv|--verbose)
+      -v|--verbose)
         VERBOSE=1
         shift
         ;;
