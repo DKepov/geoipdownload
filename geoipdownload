@@ -531,6 +531,9 @@ main() {
   # Parsing of arguments
   parse_and_default_args "$@"
 
+  # Show current version
+  info "$(version)"
+
   # Checking Config on exists
   check_config_exists "$CONFIG_FILE"
 
