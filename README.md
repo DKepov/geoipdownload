@@ -47,17 +47,31 @@ You most likely have the following dependencies. But you can check the list your
 
 ## Command Line Usage
 
-`bash
+```bash
+geoipdownload [-f /etc/GeoIP.conf] [-d /usr/share/GeoIP]
+```
+
+If run without `-f`/`-d`, the script uses the default config file path `/etc/GeoIP.conf` and the default database directory `/usr/share/GeoIP`:
+
+```bash
+geoipdownload
+```
+
+You can still specify custom paths explicitly:
+
+```bash
 geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
-`
+```
 
 ### Parameters
 
-- `-f, --config-file` (required)  
+- `-f, --config-file` (optional)  
   Path to the `GeoIP.conf` configuration file.
+  Defaults to `/etc/GeoIP.conf` if not specified.
 
-- `-d, --database-directory` (required)  
+- `-d, --database-directory` (optional)  
   Target directory where `.mmdb` files will be written. The directory must exist and be writable.
+  Defaults to `/usr/share/GeoIP` if not specified.
 
 - `-v, --verbose, --vvv`  
   Enable verbose output (shows detailed progress and debug information).
