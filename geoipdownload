@@ -165,13 +165,13 @@ parse_and_default_args() {
         DATABASE_DIRECTORY="$2"
         shift 2
         ;;
-      -h|--help)
-        usage
-        exit 0
-        ;;
       -v|--vvv|--verbose)
         VERBOSE=1
         shift
+        ;;
+      -h|--help)
+        usage
+        exit 0
         ;;
       -V|--version)
         version
