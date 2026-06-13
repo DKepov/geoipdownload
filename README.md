@@ -115,6 +115,7 @@ This is what a successful database update looks like.
 
 ```bash
 dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP -vvv
+[2026-06-23T03:05:36+0000]: [INFO]  The geoipdownload version: 1.0.0
 [2026-06-23T03:05:36+0000]: [INFO]  The configuration file 'GeoIP.conf' found and ready for use.
 [2026-06-23T03:05:36+0000]: [INFO]  The database directory '/usr/share/GeoIP' found and ready for use.
 [2026-06-23T03:05:36+0000]: [INFO]  The 'LicenseKey' has been successfully read.
