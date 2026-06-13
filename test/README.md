@@ -58,7 +58,7 @@ Important: You must run this without using actual files and directories.
 It's best to follow these steps:
 
 - `cd test` (in the current directory)
-- `mkdir check`
+- `mkdir -p check`
 - `cp ./../GeoIP.conf ./check/GeoIP.conf`
 - `cp ./../geoipdownload ./check/geoipdownload`
 - `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload`
