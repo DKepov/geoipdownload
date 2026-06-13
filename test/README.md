@@ -30,9 +30,9 @@ Required:
 
 ## Preparing the server
 
-The server must be run in the current directory.
+The server must be run in the `test-data` directory.
 
-How to run the server in a local directory:
+How to run the server in a `test-data` directory:
 
 - Python: `python -m http.server 8080`
 - PHP: `php -S localhost:8080`
