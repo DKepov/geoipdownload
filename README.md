@@ -24,9 +24,22 @@ It reads configuration from a `GeoIP.conf` file (just like the official tool), d
 
 This script is ideal when you want a minimal, transparent, and easily auditable solution without installing the official Go-based `geoipupdate` tool.
 
+## Requirements
+
+You most likely have the following dependencies. But you can check the list yourself.
+
+- `bash` (version 4+ recommended, uses `mapfile` and other bashisms)
+- `curl` — for downloading database archives
+- `tar` — for extracting `.mmdb` files from archives
+- `file` — for validating downloaded archive type
+- `getopt` GNU (util-linux) — for argument parsing
+    - On macOS, install via `brew install gnu-getopt` and ensure it's first in `$PATH`
+- `grep` GNU with PCRE support (`-P` flag) — for parsing `GeoIP.conf`
+- `coreutils` (`rm`, `touch`, `cat`, `printf`, `mkdir`) - they are everywhere
+
 ## Features
 
-- Pure Bash implementation (no external dependencies except `curl`, `tar`, and `file`)
+- Pure Bash implementation with minimal external dependencies: `curl`, `tar`, `file`, `getopt`, `grep`
 - Supports all GeoLite2 and GeoIP2 editions
 - Full error handling and validation
 - Verbose output mode
