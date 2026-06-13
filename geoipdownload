@@ -17,10 +17,14 @@
 #
 # How to use:
 #  geoipdownload --help
-#  geoipdownload -f CONFIG_FILE -d TARGET_DIRECTORY
+#  geoipdownload [-f CONFIG_FILE] [-d TARGET_DIRECTORY]
+#
+# If -f/--config-file is omitted, defaults to /etc/GeoIP.conf
+# If -d/--database-directory is omitted, defaults to /usr/share/GeoIP
 #
 # Example to use:
 #  geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
+#  geoipdownload
 #
 
 # Strict mode
@@ -33,6 +37,10 @@ set -o pipefail
 readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
+
+# Defaults
+readonly DEFAULT_CONFIG_FILE='/etc/GeoIP.conf'
+readonly DEFAULT_DATABASE_DIRECTORY='/usr/share/GeoIP'
 
 CONFIG_FILE=""
 DATABASE_DIRECTORY=""
@@ -82,22 +90,24 @@ Expected GeoIP.conf format:
   EditionIDs GeoLite2-City GeoLite2-Country
 
 
-Usage: geoipdownload [FLAGS] -f CONFIG_FILE -d TARGET_DIRECTORY
+Usage: geoipdownload [FLAGS] [-f CONFIG_FILE] [-d TARGET_DIRECTORY]
 
 FLAGS:
 
   -h, --help                    Show this help message.
   -v, --vvv, --verbose          Print informational and error messages.
 
-PARAMS (required):
+PARAMS (optional):
 
   -f, --config-file             Path to GeoIP.conf.
-                                This is required.
+                                If not specified, defaults to:
+                                  /etc/GeoIP.conf
                                 See GeoIP.conf and its documentation for
                                 more information.
 
   -d, --database-directory      Path to Directory where .mmdb files will be written.
-                                This is required.
+                                If not specified, defaults to:
+                                  /usr/share/GeoIP
                                 For install databases to a custom directory
                                 you need check documentation.
 EOF
@@ -166,10 +176,15 @@ parse_args() {
     esac
   done
 
-# Checking required parameters (if the script was run without any flags at all)
-if [[ -z "$CONFIG_FILE" || -z "$DATABASE_DIRECTORY" ]]; then
-  err "The '--config-file (-f)' and '--database-directory (-d)' parameters are strictly required!"
-  exit 1
+# Applying default values for missing required parameters
+if [[ -z "$CONFIG_FILE" ]]; then
+  CONFIG_FILE="$DEFAULT_CONFIG_FILE"
+  info "The '--config-file (-f)' parameter was not specified. Using default: '$CONFIG_FILE'"
+fi
+
+if [[ -z "$DATABASE_DIRECTORY" ]]; then
+  DATABASE_DIRECTORY="$DEFAULT_DATABASE_DIRECTORY"
+  info "The '--database-directory (-d)' parameter was not specified. Using default: '$DATABASE_DIRECTORY'"
 fi
 
 } # parse_args()
