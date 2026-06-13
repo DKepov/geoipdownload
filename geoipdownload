@@ -119,7 +119,7 @@ EOF
 # Validation of the argument string via getopt
 # Important: we are suppressing the verification of unknown parameters
 #
-parse_args() {
+parse_and_default_args() {
 
   local options
   local short_options
@@ -187,7 +187,7 @@ if [[ -z "$DATABASE_DIRECTORY" ]]; then
   info "The '--database-directory (-d)' parameter was not specified. Using default: '$DATABASE_DIRECTORY'"
 fi
 
-} # parse_args()
+} # parse_and_default_args()
 
 #
 # Check Config exists
@@ -515,7 +515,7 @@ main() {
   local database_name
 
   # Parsing of arguments
-  parse_args "$@"
+  parse_and_default_args "$@"
 
   # Checking Config on exists
   check_config_exists "$CONFIG_FILE"
