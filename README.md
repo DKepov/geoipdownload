@@ -128,6 +128,17 @@ dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share
 [2026-06-23T03:05:36+0000]: [INFO]  All GeoIP databases have been successfully updated!
 ```
 
+## Code Quality
+
+This script did checked with [ShellCheck](https://www.shellcheck.net/), a static analysis tool that catches common bugs and pitfalls in shell scripts. 
+No warnings or errors are reported.
+
+You can verify it yourself:
+
+```bash
+shellcheck geoipdownload
+```
+
 ## Useful MaxMind Resources
 
 - [MaxMind GeoIP Portal](https://dev.maxmind.com/geoip/) — Main page for GeoIP and GeoLite products, services, and documentation.
