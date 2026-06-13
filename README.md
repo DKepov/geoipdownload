@@ -34,22 +34,22 @@ This script is ideal when you want a minimal, transparent, and easily auditable 
 
 ## Command Line Usage
 
-```bash
+`bash
 geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
-```
+`
 
 ### Parameters
 
-- **`-f, --config-file`** (required)  
+- `-f, --config-file` (required)  
   Path to the `GeoIP.conf` configuration file.
 
-- **`-d, --database-directory`** (required)  
+- `-d, --database-directory` (required)  
   Target directory where `.mmdb` files will be written. The directory must exist and be writable.
 
-- **`-v, --verbose, --vvv`**  
+- `-v, --verbose, --vvv`  
   Enable verbose output (shows detailed progress and debug information).
 
-- **`-h, --help`**  
+- `-h, --help`  
   Show help message and exit.
 
 This script follows a similar interface to the official `geoipupdate` tool. For complete reference see:  
@@ -61,8 +61,8 @@ The script expects a configuration file in the same format as the official MaxMi
 
 ### Required settings:
 
-- **`LicenseKey`** — Your case-sensitive MaxMind license key.
-- **`EditionIDs`** — Space-separated list of database edition IDs (e.g. `GeoLite2-City GeoLite2-Country GeoLite2-ASN`).
+- `LicenseKey` — Your case-sensitive MaxMind license key.
+- `EditionIDs` — Space-separated list of database edition IDs (e.g. `GeoLite2-City GeoLite2-Country GeoLite2-ASN`).
 
 ### Optional settings (supported by official tool, partially by this script):
 
@@ -117,10 +117,10 @@ dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share
 
 ## Useful MaxMind Resources
 
-- **[MaxMind GeoIP Portal](https://dev.maxmind.com/geoip/)** — Main page for GeoIP and GeoLite products, services, and documentation.
-- **[Updating GeoIP and GeoLite Databases](https://dev.maxmind.com/geoip/updating-databases/)** — Official guide on how to keep your databases up to date.
-- **[City and Country Databases – Example Files](https://dev.maxmind.com/geoip/docs/databases/city-and-country/#example-files)** — Examples and structure of City/Country database content.
-- **[MaxMind-DB File Format Specification](https://maxmind.github.io/MaxMind-DB/)** — Technical specification of the `.mmdb` binary database format.
+- [MaxMind GeoIP Portal](https://dev.maxmind.com/geoip/) — Main page for GeoIP and GeoLite products, services, and documentation.
+- [Updating GeoIP and GeoLite Databases](https://dev.maxmind.com/geoip/updating-databases/) — Official guide on how to keep your databases up to date.
+- [City and Country Databases – Example Files](https://dev.maxmind.com/geoip/docs/databases/city-and-country/#example-files) — Examples and structure of City/Country database content.
+- [MaxMind-DB File Format Specification](https://maxmind.github.io/MaxMind-DB/) — Technical specification of the `.mmdb` binary database format.
 
 ## Original Project
 
