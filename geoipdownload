@@ -32,6 +32,8 @@
 set -o nounset
 set -o pipefail
 
+# Current version
+readonly VERSION='0.X.X'
 
 # Constants
 readonly DOWNLOAD_URL_TEMPLATE='https://download.maxmind.com/app/geoip_download?edition_id=EDITION_ID&license_key=LICENSE_KEY&suffix=tar.gz'
@@ -75,6 +77,13 @@ info() {
 } # info()
 
 #
+# Version of program
+#
+version() {
+  echo Version: "${VERSION}"
+} # version()
+
+#
 # Usage "--help" function
 #
 usage() {
@@ -96,6 +105,7 @@ FLAGS:
 
   -h, --help                    Show this help message.
   -v, --vvv, --verbose          Print informational and error messages.
+  -V, --version                 Current version of program.
 
 PARAMS (optional):
 
@@ -130,8 +140,8 @@ parse_and_default_args() {
   # "$@" passes the current script arguments.
 
   # Configuring the getopt utility
-  short_options='f:d:vh'
-  long_options='config-file:,database-directory:,verbose,vvv,help'
+  short_options='f:d:vhV'
+  long_options='config-file:,database-directory:,verbose,vvv,help,version'
 
   # Important: we are suppressing the verification of unknown parameters with --quiet
   options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2>/dev/null || true
@@ -162,6 +172,10 @@ parse_and_default_args() {
       -v|--vvv|--verbose)
         VERBOSE=1
         shift
+        ;;
+      -V|--version)
+        version
+        exit 0
         ;;
       --)
         shift
