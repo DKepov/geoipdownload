@@ -80,7 +80,7 @@ info() {
 # Version of program
 #
 version() {
-  echo Version: "${VERSION}"
+  echo "The geoipdownload version: ${VERSION}"
 } # version()
 
 #
