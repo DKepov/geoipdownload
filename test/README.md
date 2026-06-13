@@ -75,12 +75,6 @@ Important: We will download files from the `test-data` directory via **Curl** wi
 bash test.bash
 ```
 
-## Original database files
-
-The original files can be found in the corresponding Maxmind project.
-
-https://github.com/maxmind/MaxMind-DB/tree/main/test-data
-
 
 ## Author
 
