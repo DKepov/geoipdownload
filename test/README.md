@@ -51,7 +51,7 @@ Changes to the program:
 
 Note that for simplicity, we're changing the URL significantly.
 
-## Testing
+## Testing (manual)
 
 Important: You must run this without using actual files and directories.
 
@@ -65,6 +65,15 @@ It's best to follow these steps:
 - `cd check`
 - `./geoipdownload -f GeoIP.conf -d . -v`
 
+## Testing (auto)
+
+Just run the Auto Test script in the current directory.
+
+Important: We will download files from the `test-data` directory via **Curl** with '**file:///**' protocol.
+
+```shell
+bash test.bash
+```
 
 ## Original database files
 
