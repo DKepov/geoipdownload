@@ -1,11 +1,14 @@
 #!/bin/bash
 
+readonly TEST_SUB_DIR='./check'
+readonly DATABASE_DIR='./../test-data'
+
 CURRENT_DIR="$(pwd)"
 readonly CURRENT_DIR
 
-readonly CHECK_DIR="${CURRENT_DIR}/check"
+readonly CHECK_DIR="${CURRENT_DIR}/"${TEST_SUB_DIR}
 
-readonly URL="${CURRENT_DIR}/../test-data"
+readonly URL="${CURRENT_DIR}/${DATABASE_DIR}"
 
 mkdir -p "${CHECK_DIR}" || err 'Can not create the Test directory'
 
