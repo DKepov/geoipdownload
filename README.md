@@ -2,9 +2,9 @@
 
 **GeoIP and GeoLite Update Program.**
 
-A lightweight bash alternative to the official `geoipupdate` client from MaxMind.
+A lightweight bash alternative to the official `geoipupdate` client from MaxMind for updating GeoIP and GeoLite databases.
 
-_Development of this program began even before the official client was released. It has now been finalized._
+_Development of this program began even before the official client was released like a good. It has now been finalized. :)_
 
 # GeoIP Database Downloader
 
