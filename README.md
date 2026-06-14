@@ -20,6 +20,8 @@ It is suitable as an easy alternative to `geoipupdate` if you need a simple and 
 
 `geoipdownload` is a simple, robust Bash script that downloads and updates MaxMind GeoIP / GeoLite2 databases.
 
+Like the official `geoipupdate` tool, this script downloads only binary `.mmdb` database files packaged as `tar.gz` archives. CSV editions and other formats are not supported.
+
 It reads configuration from a `GeoIP.conf` file (just like the official tool), downloads the latest database archives from MaxMind, extracts the `.mmdb` files, and places them in the specified directory.
 
 This script is ideal when you want a minimal, transparent, and easily auditable solution without installing the official Go-based `geoipupdate` tool.
@@ -44,6 +46,7 @@ You most likely have the following dependencies. But you can check the list your
 - Full error handling and validation
 - Verbose output mode
 - Compatible with the same `GeoIP.conf` format used by official `geoipupdate`
+- Downloads binary `.mmdb` files only (same behavior as the official `geoipupdate` tool); CSV and other formats are not supported
 
 ## Command Line Usage
 
