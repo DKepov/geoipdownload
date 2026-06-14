@@ -91,7 +91,7 @@ version() {
 # Usage "--help" function
 #
 usage() {
-  cat <<'EOF'
+  cat << 'EOF'
 Download MaxMind GeoIP databases listed in GeoIP.conf
 into the current directory.
 
@@ -148,7 +148,7 @@ parse_and_default_args() {
   long_options='config-file:,database-directory:,verbose,help,version'
 
   # Important: we are suppressing the verification of unknown parameters with --quiet
-  options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2>/dev/null || true
+  options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2> /dev/null || true
 
   # Overwriting the positional parameters of the script ($1, $2...) the cleared string from getopt
   eval set -- "$options"
@@ -253,7 +253,7 @@ check_directory_exists_and_writable() {
 
   # We are trying to create a hidden test file
   write_test_file="${database_directory}/.write_test"
-  if touch "$write_test_file" 2>/dev/null; then
+  if touch "$write_test_file" 2> /dev/null; then
     # Deleting it if it was created successfully
     rm -f "$write_test_file"
   else
@@ -318,7 +318,7 @@ read_edition_ids() {
   #  "GeoLite2-Country"
   #)
 
-  read -ra edition_ids <<<"$edition_ids_line"
+  read -ra edition_ids <<< "$edition_ids_line"
 
   edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
   edition_ids_line=${edition_ids_line% }
@@ -406,7 +406,7 @@ download_database_archive() {
     --connect-timeout "$CURL_CONNECT_TIMEOUT" \
     --max-time "$CURL_MAX_TIME" \
     --output "${database_directory}/$archive_name" \
-    "$download_url" 2>/dev/null
+    "$download_url" 2> /dev/null
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -485,7 +485,7 @@ extract_database_from_archive() {
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2>/dev/null)
+  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2> /dev/null)
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -501,7 +501,7 @@ extract_database_from_archive() {
     exit 1
   fi
 
-  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2>/dev/null
+  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2> /dev/null
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
