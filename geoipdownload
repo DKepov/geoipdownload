@@ -19,29 +19,28 @@
 # The script expects GeoIP.conf in the default directory (or at the specified) and writes the
 # downloaded .mmdb files in the default directory (or at the specified).
 #
-#
 # Expected GeoIP.conf format:
-#  LicenseKey YOUR_LICENSE_KEY
-#  EditionIDs GeoLite2-City GeoLite2-Country
+#   LicenseKey YOUR_LICENSE_KEY
+#   EditionIDs GeoLite2-City GeoLite2-Country
 #
 #
-# How to use:
-#  geoipdownload --help
-#  geoipdownload [-f CONFIG_FILE] [-d TARGET_DIRECTORY]
+# USAGE:
+#   geoipdownload [-f CONFIG_FILE] [-d DATABASE_DIRECTORY] [-v] [-h] [-V]
 #
-# If -f/--config-file is omitted, defaults to /etc/GeoIP.conf
-# If -d/--database-directory is omitted, defaults to /usr/share/GeoIP
-#
-#
-# Example to use:
-#  geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
-#  geoipdownload -f /etc/GeoIP.conf
-#  geoipdownload
+# DEFAULTS:
+#   -f  /etc/GeoIP.conf
+#   -d  /usr/share/GeoIP
 #
 #
-# Analog for geoipupdate
-# https://dev.maxmind.com/geoip/updating-databases/
-# https://github.com/maxmind/geoipupdate
+# EXAMPLE:
+#   geoipdownload -f /etc/GeoIP.conf -d /usr/share/GeoIP
+#   geoipdownload -f /etc/GeoIP.conf
+#   geoipdownload
+#
+#
+# References:
+#  https://dev.maxmind.com/geoip/updating-databases/
+#  https://github.com/maxmind/geoipupdate
 #
 
 # Strict mode
