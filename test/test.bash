@@ -1,14 +1,12 @@
 #!/bin/bash
 
-readonly TEST_SUB_DIR='./check'
-readonly DATABASE_DIR='./../test-data'
+PROJECT_DIR="$(pwd)/../"
+PROJECT_DIR="$(realpath "${PROJECT_DIR}")"
+readonly PROJECT_DIR
 
-CURRENT_DIR="$(pwd)"
-readonly CURRENT_DIR
-
-readonly CHECK_DIR="${CURRENT_DIR}/"${TEST_SUB_DIR}
-
-readonly URL="${CURRENT_DIR}/${DATABASE_DIR}"
+readonly CURRENT_DIR="${PROJECT_DIR}/test"
+readonly DATABASE_DIR="${PROJECT_DIR}/test-data"
+readonly CHECK_DIR="${CURRENT_DIR}/check"
 
 err() {
   echo "$@" >&2
@@ -50,10 +48,10 @@ run_or_next() {
 
 run_or_next ::: mkdir -p "${CHECK_DIR}" :: err 'Can not create the Test directory:' "${CHECK_DIR}"
 
-run_or_next ::: cp './../GeoIP.confd' "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' './../GeoIP.conf to' "${CHECK_DIR}/GeoIP.conf"
-run_or_next ::: cp './../geoipdownload' "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file:' './../geoipdownload to' "${CHECK_DIR}/geoipdownload"
+run_or_next ::: cp "${PROJECT_DIR}/GeoIP.conf" "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' "${PROJECT_DIR}/GeoIP.conf" 'to' "${CHECK_DIR}/GeoIP.conf"
+run_or_next ::: cp "${PROJECT_DIR}/geoipdownload" "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file:' "${PROJECT_DIR}/geoipdownload" 'to' "${CHECK_DIR}/geoipdownload"
 
-run_or_next ::: sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload" :: err 'Can not rewrite the Download URL'
+run_or_next ::: sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${DATABASE_DIR}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload" :: err 'Can not rewrite the Download URL'
 
 run_or_next ::: cd "${CHECK_DIR}" :: err 'Can not open the Test directory:' "${CHECK_DIR}"
 
