@@ -46,7 +46,7 @@ run_or_next() {
   "${TARGET_COMMAND[@]}" 2>/dev/null || "${next_cmd[@]}"
 }
 
-run_or_next ::: mkdir -p "${CHECK_DIR}" :: err 'Can not create the Test directory:' "${CHECK_DIR}"
+run_or_next ::: mkdir "${CHECK_DIR}" :: err 'Can not create the Test directory:' "${CHECK_DIR}"
 
 run_or_next ::: cp "${PROJECT_DIR}/GeoIP.conf" "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' "${PROJECT_DIR}/GeoIP.conf" 'to' "${CHECK_DIR}/GeoIP.conf"
 run_or_next ::: cp "${PROJECT_DIR}/geoipdownload" "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file:' "${PROJECT_DIR}/geoipdownload" 'to' "${CHECK_DIR}/geoipdownload"
