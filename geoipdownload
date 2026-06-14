@@ -46,9 +46,11 @@ readonly DATABASE_FILE_SUFFIX='.mmdb'
 readonly DEFAULT_CONFIG_FILE='/etc/GeoIP.conf'
 readonly DEFAULT_DATABASE_DIRECTORY='/usr/share/GeoIP'
 
+# Variables (will be filled in in the future)
 CONFIG_FILE=""
 DATABASE_DIRECTORY=""
 
+# Verbose mode
 VERBOSE=0
 
 #
