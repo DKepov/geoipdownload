@@ -5,6 +5,7 @@ PROJECT_DIR="$(realpath "${PROJECT_DIR}")"
 readonly PROJECT_DIR
 
 readonly CURRENT_DIR="${PROJECT_DIR}/test"
+readonly CONFIG_DIR="${PROJECT_DIR}/test-conf"
 readonly DATABASE_DIR="${PROJECT_DIR}/test-data"
 readonly CHECK_DIR="${CURRENT_DIR}/check"
 
@@ -48,7 +49,7 @@ run_or_next() {
 
 run_or_next ::: mkdir "${CHECK_DIR}" :: err 'Can not create the Test directory:' "${CHECK_DIR}"
 
-run_or_next ::: cp "${PROJECT_DIR}/GeoIP.conf" "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' "${PROJECT_DIR}/GeoIP.conf" 'to' "${CHECK_DIR}/GeoIP.conf"
+run_or_next ::: cp "${CONFIG_DIR}/GeoIP.conf" "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' "${CONFIG_DIR}/GeoIP.conf" 'to' "${CHECK_DIR}/GeoIP.conf"
 run_or_next ::: cp "${PROJECT_DIR}/geoipdownload" "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file:' "${PROJECT_DIR}/geoipdownload" 'to' "${CHECK_DIR}/geoipdownload"
 
 run_or_next ::: sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${DATABASE_DIR}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload" :: err 'Can not rewrite the Download URL'
