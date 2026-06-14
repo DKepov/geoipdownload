@@ -151,7 +151,7 @@ acquire_lock() {
   local lock_file="$1"
 
   # Open the lock file on file descriptor 9
-  exec 9>"${lock_file}"
+  exec 9> "${lock_file}"
 
   # Try to acquire an exclusive non-blocking lock on fd 9
   if ! flock --nonblock 9; then
