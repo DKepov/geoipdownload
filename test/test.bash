@@ -1,18 +1,23 @@
 #!/bin/bash
 
-CHECK_DIR='./check'
+CURRENT_DIR="$(pwd)"
+readonly CURRENT_DIR
 
-URL="$(pwd)/../test-data"
+readonly CHECK_DIR="${CURRENT_DIR}/check"
 
-mkdir -p "${CHECK_DIR}"
+readonly URL="${CURRENT_DIR}/../test-data"
 
-cp ./../GeoIP.conf "${CHECK_DIR}"/GeoIP.conf
-cp ./../geoipdownload "${CHECK_DIR}"/geoipdownload
+mkdir -p "${CHECK_DIR}" || exit 1
 
-sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}"/geoipdownload
+cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf"
+cp './../geoipdownload' "${CHECK_DIR}/geoipdownload"
 
-cd "${CHECK_DIR}"/
+sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload"
 
-./geoipdownload -f GeoIP.conf -d . -v
+cd "${CHECK_DIR}" || exit 1
 
-rm -f "${CHECK_DIR}"
+./geoipdownload -f 'GeoIP.conf' -d '.' -v
+
+cd "${CURRENT_DIR}" || exit 1
+
+rm -rf "${CHECK_DIR}" || exit 1
