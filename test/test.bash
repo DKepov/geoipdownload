@@ -50,15 +50,15 @@ run_or_next() {
 
 run_or_next ::: mkdir -p "${CHECK_DIR}" :: err 'Can not create the Test directory'
 
-cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf"
-cp './../geoipdownload' "${CHECK_DIR}/geoipdownload"
+run_or_next ::: cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file'
+run_or_next ::: cp './../geoipdownload' "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file'
 
-sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload"
+run_or_next ::: sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload" :: err 'Can not rewrite the Download URL'
 
 run_or_next ::: cd "${CHECK_DIR}" :: err 'Can not open the Test directory'
 
 ./geoipdownload -f 'GeoIP.conf' -d '.' -v
 
-run_or_next ::: cd "${CURRENT_DIR}" :: err 'Can not leave the Test directory '
+run_or_next ::: cd "${CURRENT_DIR}" :: err 'Can not leave the Test directory'
 
 run_or_next ::: rm -rf "${CHECK_DIR}" :: err 'Can not remove the Test directory'
