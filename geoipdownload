@@ -281,7 +281,7 @@ read_license_key() {
   license_key=$(grep -oP '^LicenseKey\s+\K\S+' "$conf_file")
 
   # Checking the existence of the 'LicenseKey' in the configuration file
-  if [ -z "$license_key" ]; then
+  if [[ -z "$license_key" ]]; then
     err "The 'LicenseKey' parameter is empty or missing in '$conf_file'!"
     exit 1
   fi
@@ -307,7 +307,7 @@ read_edition_ids() {
   edition_ids_line=$(grep -Po "(?<=EditionIDs\s).*" "$conf_file")
 
   # Checking the existence of the 'EditionIDs' in the configuration file
-  if [ -z "$edition_ids_line" ]; then
+  if [[ -z "$edition_ids_line" ]]; then
     err "The 'EditionIDs' parameter is empty or missing in '$conf_file'!"
     exit 1
   fi
@@ -415,13 +415,13 @@ download_database_archive() {
   curl_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [ "$curl_exit_code" -ne 0 ]; then
+  if [[ "$curl_exit_code" -ne 0 ]]; then
     err "Curl ended with the code: $curl_exit_code"
-    if [ "$curl_exit_code" -eq 28 ]; then
+    if [[ "$curl_exit_code" -eq 28 ]]; then
       err "The timeout has expired for Curl"
-    elif [ "$curl_exit_code" -eq 22 ]; then
+    elif [[ "$curl_exit_code" -eq 22 ]]; then
       err "The server returned an HTTP error (for example, 404 or 403 or 500)"
-    elif [ "$curl_exit_code" -eq 23 ]; then
+    elif [[ "$curl_exit_code" -eq 23 ]]; then
       err "Error writing the file to disk."
     fi
     exit 1
@@ -493,7 +493,7 @@ extract_database_from_archive() {
   # The $ variable? stores the status of the last executed command
   check_exit_code=$?
 
-  if [ "$check_exit_code" -ne 0 ]; then
+  if [[ "$check_exit_code" -ne 0 ]]; then
     err "Database archive does not contain '${database_name}' or the archive is corrupted".
     exit 1
   fi
@@ -510,9 +510,9 @@ extract_database_from_archive() {
   extract_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [ "$extract_exit_code" -ne 0 ]; then
+  if [[ "$extract_exit_code" -ne 0 ]]; then
     err "Tar ended with the code: $extract_exit_code"
-    if [ "$extract_exit_code" -eq 2 ]; then
+    if [[ "$extract_exit_code" -eq 2 ]]; then
       err "The file was not found in the archive or the archive is corrupted"
     fi
     exit 1
