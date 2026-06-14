@@ -12,6 +12,8 @@
 # Note: this script downloads ONLY binary .mmdb database files (tar.gz archives),
 # identical to the behavior of the official geoipupdate tool.
 #
+# Guaranteed to work on Linux with the required dependencies installed.
+#
 # Download MaxMind GeoIP databases listed in GeoIP.conf.
 #
 # The script expects GeoIP.conf in the default directory (or at the specified) and writes the
