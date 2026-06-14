@@ -15,11 +15,11 @@ err() {
   exit 1
 }
 
-run_or_err() {
+run_or_next() {
   # Check that the first argument is our command start marker
   if [[ "$1" != ":::" ]]; then
-    err "Internal run_or_err error: marker missed :::"
-    return 1
+    echo "Syntax error run_or_next: missing token :::" >&2
+    exit 1
   fi
   shift # Remove ":::" from the argument list
 
@@ -32,15 +32,20 @@ run_or_err() {
 
   # Check if we found the "::" marker
   if [[ "$1" != "::" ]]; then
-    err "Internal run_or_err error: missing message marker ::"
-    return 1
+    echo "Syntax error run_or_next: missing token ::" >&2
+    exit 1
   fi
   shift # Remove "::" from the argument list
 
-  local msg="$1" # We take the error text itself
+  # Write the command to the second (target) array variable
+  local -a TARGET_COMMAND=("${cmd[@]}")
 
-  # We execute the compiled command, hide the system stderr and, if it crashes, call err
-  "${cmd[@]}" 2>/dev/null || err "$msg"
+  # All remaining arguments are another command
+  local next_cmd=("$@")
+
+  # We execute the compiled command, hide the system stderr and, if it crashes.
+  # We execute the main command. If it fails, we execute the error command.
+  "${TARGET_COMMAND[@]}" 2>/dev/null || "${next_cmd[@]}"
 }
 
 mkdir -p "${CHECK_DIR}" || err 'Can not create the Test directory'
