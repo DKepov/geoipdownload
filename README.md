@@ -32,20 +32,39 @@ The script is guaranteed to work on Linux environments where all required depend
 
 This script is guaranteed to work on Linux with the required dependencies installed.
 
-You most likely have the following dependencies. But you can check the list yourself.
+You most likely already have all of these. You can verify each one is available on your system.
 
-- `bash` (version 4+ recommended, uses `mapfile` and other bashisms)
-- `curl` — for downloading database archives
-- `tar` — for extracting `.mmdb` files from archives
-- `file` — for validating downloaded archive type
-- `flock` GNU (util-linux) — for atomic file locking to prevent multiple simultaneous instances
-    - Available by default on all major Linux distributions as part of `util-linux`
-    - On macOS, install via `brew install util-linux`
-- `getopt` GNU (util-linux) — for argument parsing
-    - Available by default on all major Linux distributions as part of `util-linux`
-    - On macOS, install via `brew install gnu-getopt` and ensure it's first in `$PATH`
-- `grep` GNU with PCRE support (`-P` flag) — for parsing `GeoIP.conf`
-- `coreutils` (`rm`, `touch`, `cat`, `printf`, `mkdir`) — they are everywhere
+- `bash` (version 4+) — required for `mapfile`, `[[ ]]`, and other bashisms used throughout the script
+    - On macOS, the default `bash` is version 3.x; install via `brew install bash`
+
+- `curl` — for downloading database archives from the MaxMind server
+    - Install on Debian/Ubuntu: `apt install curl`
+    - Install on RHEL/CentOS: `yum install curl`
+    - Install on macOS: `brew install curl`
+
+- `tar` — for extracting `.mmdb` files from downloaded `tar.gz` archives
+    - Available by default on all major Linux distributions and macOS
+
+- `file` — for validating the downloaded archive type by checking the file header
+    - Available by default on all major Linux distributions and macOS
+    - Install on Debian/Ubuntu if missing: `apt install file`
+
+- `flock` — for atomic file locking to prevent multiple simultaneous instances
+    - Part of `util-linux`, available by default on all major Linux distributions
+    - Install on Debian/Ubuntu if missing: `apt install util-linux`
+    - On macOS, `flock` is not available by default; install via `brew install util-linux`
+
+- `getopt` GNU (util-linux) — for argument parsing (`-f`, `-d`, `-v`, etc.)
+    - Available by default on all major Linux distributions
+    - On macOS, the default `getopt` does not support long options; install via `brew install gnu-getopt` and ensure it's first in `$PATH`
+
+- `grep` GNU with PCRE support (`-P` flag) — for parsing `LicenseKey` and `EditionIDs` from `GeoIP.conf`
+    - Available by default on all major Linux distributions
+    - On macOS, the default `grep` does not support `-P`; install via `brew install grep` and ensure it's first in `$PATH`
+
+- `coreutils` (`rm`, `touch`, `cat`, `printf`, `date`) — used for file operations and log formatting
+    - Available by default on all major Linux distributions and macOS
+    - On macOS, some utilities may behave differently; install GNU coreutils via `brew install coreutils`
 
 ## Features
 
