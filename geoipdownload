@@ -375,7 +375,7 @@ build_database_name() {
 
   printf '%s' "${edition_id_database}"
 
-} # build_archive_name()
+} # build_database_name()
 
 #
 # Download database archive
@@ -440,7 +440,7 @@ check_database_archive() {
   if ! file "${database_directory}/${archive_name}" | grep -qi "tar"; then
     err "MaxMind server error when downloading '$archive_name':"
     # Output the error text (for example: "Invalid license key")
-    archive_error=$(cat "$archive_name")
+    archive_error=$(cat "${database_directory}/$archive_name")
     err "$archive_error"
     exit 1
   fi
@@ -481,7 +481,7 @@ extract_database_from_archive() {
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  files=$(tar -tf "${archive_name}" 2> /dev/null)
+  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2> /dev/null)
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
