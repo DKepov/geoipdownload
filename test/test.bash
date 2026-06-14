@@ -11,7 +11,7 @@ readonly CHECK_DIR="${CURRENT_DIR}/"${TEST_SUB_DIR}
 readonly URL="${CURRENT_DIR}/${DATABASE_DIR}"
 
 err() {
-  echo "$1" >&2
+  echo "$@" >&2
   exit 1
 }
 
@@ -48,17 +48,17 @@ run_or_next() {
   "${TARGET_COMMAND[@]}" 2>/dev/null || "${next_cmd[@]}"
 }
 
-run_or_next ::: mkdir -p "${CHECK_DIR}" :: err 'Can not create the Test directory'
+run_or_next ::: mkdir -p "${CHECK_DIR}" :: err 'Can not create the Test directory:' "${CHECK_DIR}"
 
-run_or_next ::: cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file'
-run_or_next ::: cp './../geoipdownload' "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file'
+run_or_next ::: cp './../GeoIP.confd' "${CHECK_DIR}/GeoIP.conf" :: err 'Can not copy the Config file:' './../GeoIP.conf to' "${CHECK_DIR}/GeoIP.conf"
+run_or_next ::: cp './../geoipdownload' "${CHECK_DIR}/geoipdownload" :: err 'Can not copy the Application file:' './../geoipdownload to' "${CHECK_DIR}/geoipdownload"
 
 run_or_next ::: sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITION_ID.mmdb.tar.gz'|g" "${CHECK_DIR}/geoipdownload" :: err 'Can not rewrite the Download URL'
 
-run_or_next ::: cd "${CHECK_DIR}" :: err 'Can not open the Test directory'
+run_or_next ::: cd "${CHECK_DIR}" :: err 'Can not open the Test directory:' "${CHECK_DIR}"
 
-./geoipdownload -f 'GeoIP.conf' -d '.' -v
+./geoipdownload -f 'GeoIP.conf' -d '.' -v # Running without Error Suppression
 
-run_or_next ::: cd "${CURRENT_DIR}" :: err 'Can not leave the Test directory'
+run_or_next ::: cd "${CURRENT_DIR}" :: err 'Can not leave the Test directory:' "${CURRENT_DIR}"
 
-run_or_next ::: rm -rf "${CHECK_DIR}" :: err 'Can not remove the Test directory'
+run_or_next ::: rm -rf "${CHECK_DIR}" :: err 'Can not remove the Test directory:' "${CHECK_DIR}"
