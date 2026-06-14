@@ -15,6 +15,34 @@ err() {
   exit 1
 }
 
+run_or_err() {
+  # Check that the first argument is our command start marker
+  if [[ "$1" != ":::" ]]; then
+    err "Internal run_or_err error: marker missed :::"
+    return 1
+  fi
+  shift # Remove ":::" from the argument list
+
+  local cmd=()
+  # We assemble the command until we encounter the message marker "::"
+  while [[ "$1" != "::" && $# -gt 0 ]]; do
+    cmd+=("$1")
+    shift
+  done
+
+  # Check if we found the "::" marker
+  if [[ "$1" != "::" ]]; then
+    err "Internal run_or_err error: missing message marker ::"
+    return 1
+  fi
+  shift # Remove "::" from the argument list
+
+  local msg="$1" # We take the error text itself
+
+  # We execute the compiled command, hide the system stderr and, if it crashes, call err
+  "${cmd[@]}" 2>/dev/null || err "$msg"
+}
+
 mkdir -p "${CHECK_DIR}" || err 'Can not create the Test directory'
 
 cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf"
