@@ -328,6 +328,31 @@ check_directory_exists_and_writable() {
 } # check_directory_exists_and_writable()
 
 #
+# Read account id
+#
+# Reading account id to variable
+# We display errors and information messages inside
+#
+read_account_id() {
+
+  local conf_file="$1"
+  local account_id
+
+  account_id=$(grep -oP '^AccountID\s+\K\S+' "${conf_file}")
+
+  # Checking the existence of the 'AccountID' in the configuration file
+  if [[ -z "${account_id}" ]]; then
+    err "The 'AccountID' parameter is empty or missing in '${conf_file}'!"
+    exit 1
+  fi
+
+  info "The 'AccountID' has been successfully read."
+
+  printf '%s' "${account_id}"
+
+} # read_account_id()
+
+#
 # Read license key
 #
 # Reading license key to variable
@@ -588,6 +613,7 @@ extract_database_from_archive() {
 main() {
 
   local version
+  local account_id
   local license_key
   local edition_ids
   local edition_id
@@ -613,6 +639,9 @@ main() {
   acquire_lock "${LOCK_FILE}"
   # It is triggered at any exit — normal, by mistake, or by signal.
   trap 'release_lock "${LOCK_FILE}"' EXIT
+
+  # Reading Account ID name for downloading
+  account_id=$(read_account_id "${CONFIG_FILE}")
 
   # Reading Licence name for downloading
   license_key=$(read_license_key "${CONFIG_FILE}")
