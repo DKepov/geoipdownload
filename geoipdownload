@@ -66,7 +66,7 @@ message() {
 err() {
   local msg
   msg=$(message "[ERROR]" "$*")
-  echo "${msg}"  >&2
+  echo "${msg}" >&2
 } # err()
 
 #
@@ -155,29 +155,29 @@ parse_and_default_args() {
 
   while true; do
     case "${1:-}" in
-      -f|--config-file)
+      -f | --config-file)
         if [[ -z "${2:-}" || "$2" == -* || "$2" == --* ]]; then
           break
         fi
         CONFIG_FILE="$2"
         shift 2
         ;;
-      -d|--database-directory)
+      -d | --database-directory)
         if [[ -z "${2:-}" || "$2" == -* || "$2" == --* ]]; then
           break
         fi
         DATABASE_DIRECTORY="$2"
         shift 2
         ;;
-      -v|--verbose)
+      -v | --verbose)
         VERBOSE=1
         shift
         ;;
-      -h|--help)
+      -h | --help)
         usage
         exit 0
         ;;
-      -V|--version)
+      -V | --version)
         version
         exit 0
         ;;
@@ -194,16 +194,16 @@ parse_and_default_args() {
     esac
   done
 
-# Applying default values for missing required parameters
-if [[ -z "$CONFIG_FILE" ]]; then
-  CONFIG_FILE="$DEFAULT_CONFIG_FILE"
-  info "The '--config-file (-f)' parameter was not specified. Using default: '$CONFIG_FILE'"
-fi
+  # Applying default values for missing required parameters
+  if [[ -z "$CONFIG_FILE" ]]; then
+    CONFIG_FILE="$DEFAULT_CONFIG_FILE"
+    info "The '--config-file (-f)' parameter was not specified. Using default: '$CONFIG_FILE'"
+  fi
 
-if [[ -z "$DATABASE_DIRECTORY" ]]; then
-  DATABASE_DIRECTORY="$DEFAULT_DATABASE_DIRECTORY"
-  info "The '--database-directory (-d)' parameter was not specified. Using default: '$DATABASE_DIRECTORY'"
-fi
+  if [[ -z "$DATABASE_DIRECTORY" ]]; then
+    DATABASE_DIRECTORY="$DEFAULT_DATABASE_DIRECTORY"
+    info "The '--database-directory (-d)' parameter was not specified. Using default: '$DATABASE_DIRECTORY'"
+  fi
 
 } # parse_and_default_args()
 
@@ -318,7 +318,7 @@ read_edition_ids() {
   #  "GeoLite2-Country"
   #)
 
-  read -ra edition_ids <<< "$edition_ids_line";
+  read -ra edition_ids <<<"$edition_ids_line"
 
   edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
   edition_ids_line=${edition_ids_line% }
@@ -406,7 +406,7 @@ download_database_archive() {
     --connect-timeout "$CURL_CONNECT_TIMEOUT" \
     --max-time "$CURL_MAX_TIME" \
     --output "${database_directory}/$archive_name" \
-    "$download_url" 2> /dev/null
+    "$download_url" 2>/dev/null
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -414,15 +414,15 @@ download_database_archive() {
 
   # Checking the variable with the Curl Code
   if [ "$curl_exit_code" -ne 0 ]; then
-      err "Curl ended with the code: $curl_exit_code"
-      if [ "$curl_exit_code" -eq 28 ]; then
-          err "The timeout has expired for Curl"
-      elif [ "$curl_exit_code" -eq 22 ]; then
-          err "The server returned an HTTP error (for example, 404 or 403 or 500)"
-      elif [ "$curl_exit_code" -eq 23 ]; then
-          err "Error writing the file to disk."
-      fi
-      exit 1
+    err "Curl ended with the code: $curl_exit_code"
+    if [ "$curl_exit_code" -eq 28 ]; then
+      err "The timeout has expired for Curl"
+    elif [ "$curl_exit_code" -eq 22 ]; then
+      err "The server returned an HTTP error (for example, 404 or 403 or 500)"
+    elif [ "$curl_exit_code" -eq 23 ]; then
+      err "Error writing the file to disk."
+    fi
+    exit 1
   fi
 
 } # download_database_archive()
@@ -485,23 +485,23 @@ extract_database_from_archive() {
   # Downloading Bases
   info "Extracting the Database file from the Database archive ..."
 
-  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2> /dev/null)
+  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2>/dev/null)
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
   check_exit_code=$?
 
   if [ "$check_exit_code" -ne 0 ]; then
-      err "Database archive does not contain '${database_name}' or the archive is corrupted".
-      exit 1
+    err "Database archive does not contain '${database_name}' or the archive is corrupted".
+    exit 1
   fi
 
   if [[ ! "$files" =~ ${database_name} ]]; then
-      err "Database archive does not contain '${database_name}' or the archive is corrupted".
-      exit 1
+    err "Database archive does not contain '${database_name}' or the archive is corrupted".
+    exit 1
   fi
 
-  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2> /dev/null
+  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2>/dev/null
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -509,11 +509,11 @@ extract_database_from_archive() {
 
   # Checking the variable with the Curl Code
   if [ "$extract_exit_code" -ne 0 ]; then
-      err "Tar ended with the code: $extract_exit_code"
-      if [ "$extract_exit_code" -eq 2 ]; then
-          err "The file was not found in the archive or the archive is corrupted"
-      fi
-      exit 1
+    err "Tar ended with the code: $extract_exit_code"
+    if [ "$extract_exit_code" -eq 2 ]; then
+      err "The file was not found in the archive or the archive is corrupted"
+    fi
+    exit 1
   fi
 
   info "Extracting the Database file from the Database archive is successfully"
@@ -557,8 +557,7 @@ main() {
   # Walking through the array
   # And downloading database in current directory
 
-  for edition_id in "${edition_ids[@]}"
-  do
+  for edition_id in "${edition_ids[@]}"; do
 
     info "The current database is: '$edition_id'"
 
