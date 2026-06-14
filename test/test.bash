@@ -10,6 +10,11 @@ readonly CHECK_DIR="${CURRENT_DIR}/"${TEST_SUB_DIR}
 
 readonly URL="${CURRENT_DIR}/${DATABASE_DIR}"
 
+err() {
+  echo "$1" >&2
+  exit 1
+}
+
 mkdir -p "${CHECK_DIR}" || err 'Can not create the Test directory'
 
 cp './../GeoIP.conf' "${CHECK_DIR}/GeoIP.conf"
@@ -24,8 +29,3 @@ cd "${CHECK_DIR}" || err 'Can not open the Test directory'
 cd "${CURRENT_DIR}" || err 'Can not leave the Test directory '
 
 rm -rf "${CHECK_DIR}" || err 'Can not remove the Test directory'
-
-err() {
-    echo "$1" >&2
-    exit 1
-}
