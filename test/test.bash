@@ -14,3 +14,5 @@ sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='file://${URL}/EDITIO
 cd "${CHECK_DIR}"/
 
 ./geoipdownload -f GeoIP.conf -d . -v
+
+rm -f "${CHECK_DIR}"
