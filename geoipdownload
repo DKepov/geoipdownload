@@ -12,6 +12,10 @@
 # database files packaged as tar.gz archives. CSV editions and other formats
 # are not supported.
 #
+# Compatible with the GeoIP.conf configuration format used by the official
+# geoipupdate tool up to version 4.0.0. Existing configuration files can be
+# reused without any changes.
+#
 # Reads LicenseKey and EditionIDs from GeoIP.conf, downloads MaxMind archives
 # in tar.gz format, and extracts *.mmdb files to the target directory.
 #
