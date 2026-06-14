@@ -38,6 +38,9 @@ You most likely have the following dependencies. But you can check the list your
 - `curl` — for downloading database archives
 - `tar` — for extracting `.mmdb` files from archives
 - `file` — for validating downloaded archive type
+- `flock` GNU (util-linux) — for atomic file locking to prevent multiple simultaneous instances
+    - Available by default on all major Linux distributions as part of `util-linux`
+    - On macOS, install via `brew install util-linux`
 - `getopt` GNU (util-linux) — for argument parsing
     - On macOS, install via `brew install gnu-getopt` and ensure it's first in `$PATH`
 - `grep` GNU with PCRE support (`-P` flag) — for parsing `GeoIP.conf`
