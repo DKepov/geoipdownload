@@ -56,6 +56,9 @@ readonly CURL_MAX_TIME=60
 readonly DATABASE_ARCHIVE_SUFFIX='.mmdb.tar.gz'
 readonly DATABASE_FILE_SUFFIX='.mmdb'
 
+# Lock file
+readonly LOCK_FILE='/tmp/geoipdownload.lock'
+
 # Defaults
 readonly DEFAULT_CONFIG_FILE='/etc/GeoIP.conf'
 readonly DEFAULT_DATABASE_DIRECTORY='/usr/share/GeoIP'
@@ -139,6 +142,43 @@ PARAMS:
                                 See GeoIP.conf and official documentation.
 EOF
 }
+
+#
+# Acquire lock
+#
+acquire_lock() {
+
+  local lock_file="$1"
+
+  # Open the lock file on file descriptor 9
+  exec 9>"${lock_file}"
+
+  # Try to acquire an exclusive non-blocking lock on fd 9
+  if ! flock --nonblock 9; then
+    err "Another instance of geoipdownload is already running. Exiting."
+    exit 1
+  fi
+
+  info "Lock acquired: '${lock_file}'"
+
+} # acquire_lock()
+
+#
+# Release lock
+#
+release_lock() {
+
+  local lock_file="$1"
+
+  # Release the lock on file descriptor 9
+  flock --unlock 9
+
+  # Remove the lock file
+  rm -f "${lock_file}"
+
+  info "Lock released: '${lock_file}'"
+
+} # release_lock()
 
 #
 # Parsing of arguments
@@ -549,6 +589,10 @@ main() {
 
   # Parsing of arguments
   parse_and_default_args "$@"
+
+  # Acquire lock to prevent multiple simultaneous instances
+  acquire_lock "${LOCK_FILE}"
+  trap 'release_lock "${LOCK_FILE}"' EXIT
 
   # Show current version
   version=$(version)
