@@ -111,11 +111,12 @@ version() {
 #
 usage() {
   cat << 'EOF'
-Download MaxMind GeoIP databases listed in GeoIP.conf
-into the current directory.
+GeoIP and GeoLite Update Program.
 
-The script expects GeoIP.conf in the working directory and writes the
-downloaded .mmdb files there.
+Download MaxMind GeoIP databases listed in GeoIP.conf.
+
+The script expects GeoIP.conf in the default directory (or at the specified) and writes the
+downloaded .mmdb files in the default directory (or at the specified).
 
 Expected GeoIP.conf format:
   LicenseKey YOUR_LICENSE_KEY
