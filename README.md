@@ -42,9 +42,10 @@ You most likely have the following dependencies. But you can check the list your
     - Available by default on all major Linux distributions as part of `util-linux`
     - On macOS, install via `brew install util-linux`
 - `getopt` GNU (util-linux) — for argument parsing
+    - Available by default on all major Linux distributions as part of `util-linux`
     - On macOS, install via `brew install gnu-getopt` and ensure it's first in `$PATH`
 - `grep` GNU with PCRE support (`-P` flag) — for parsing `GeoIP.conf`
-- `coreutils` (`rm`, `touch`, `cat`, `printf`, `mkdir`) - they are everywhere
+- `coreutils` (`rm`, `touch`, `cat`, `printf`, `mkdir`) — they are everywhere
 
 ## Features
 
