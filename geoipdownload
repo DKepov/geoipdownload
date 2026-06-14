@@ -75,7 +75,7 @@ err() {
 # Info message
 #
 info() {
-  if [[ "$VERBOSE" -eq 1 ]]; then
+  if [[ "${VERBOSE}" -eq 1 ]]; then
     local msg
     msg=$(message "[INFO] " "$*")
     echo "${msg}" >&2
@@ -150,10 +150,10 @@ parse_and_default_args() {
   long_options='config-file:,database-directory:,verbose,help,version'
 
   # Important: we are suppressing the verification of unknown parameters with --quiet
-  options=$(getopt --quiet --options "$short_options" --longoptions "$long_options" --name "$0" -- "$@") 2> /dev/null || true
+  options=$(getopt --quiet --options "${short_options}" --longoptions "${long_options}" --name "$0" -- "$@") 2> /dev/null || true
 
   # Overwriting the positional parameters of the script ($1, $2...) the cleared string from getopt
-  eval set -- "$options"
+  eval set -- "${options}"
 
   while true; do
     case "${1:-}" in
@@ -197,14 +197,14 @@ parse_and_default_args() {
   done
 
   # Applying default values for missing required parameters
-  if [[ -z "$CONFIG_FILE" ]]; then
-    CONFIG_FILE="$DEFAULT_CONFIG_FILE"
-    info "The '--config-file (-f)' parameter was not specified. Using default: '$CONFIG_FILE'"
+  if [[ -z "${CONFIG_FILE}" ]]; then
+    CONFIG_FILE="${DEFAULT_CONFIG_FILE}"
+    info "The '--config-file (-f)' parameter was not specified. Using default: '${CONFIG_FILE}'"
   fi
 
-  if [[ -z "$DATABASE_DIRECTORY" ]]; then
-    DATABASE_DIRECTORY="$DEFAULT_DATABASE_DIRECTORY"
-    info "The '--database-directory (-d)' parameter was not specified. Using default: '$DATABASE_DIRECTORY'"
+  if [[ -z "${DATABASE_DIRECTORY}" ]]; then
+    DATABASE_DIRECTORY="${DEFAULT_DATABASE_DIRECTORY}"
+    info "The '--database-directory (-d)' parameter was not specified. Using default: '${DATABASE_DIRECTORY}'"
   fi
 
 } # parse_and_default_args()
@@ -219,17 +219,17 @@ check_config_exists() {
 
   local conf_file="$1"
 
-  if [[ ! -f "$conf_file" ]]; then
-    err "The configuration file '$conf_file' not found!"
+  if [[ ! -f "${conf_file}" ]]; then
+    err "The configuration file '${conf_file}' not found!"
     exit 1
   fi
 
-  if [[ ! -r "$conf_file" ]]; then
-    err "The configuration file '$conf_file' cannot be read!"
+  if [[ ! -r "${conf_file}" ]]; then
+    err "The configuration file '${conf_file}' cannot be read!"
     exit 1
   fi
 
-  info "The configuration file '$conf_file' found and ready for use."
+  info "The configuration file '${conf_file}' found and ready for use."
 
 } # check_config_exists()
 
@@ -243,27 +243,27 @@ check_directory_exists_and_writable() {
 
   local database_directory="$1"
 
-  if [[ ! -d "$database_directory" ]]; then
-    err "The database directory '$database_directory' not found!"
+  if [[ ! -d "${database_directory}" ]]; then
+    err "The database directory '${database_directory}' not found!"
     exit 1
   fi
 
-  if [[ ! -w "$database_directory" ]]; then
-    err "The database directory '$database_directory' is not writable!"
+  if [[ ! -w "${database_directory}" ]]; then
+    err "The database directory '${database_directory}' is not writable!"
     exit 1
   fi
 
   # We are trying to create a hidden test file
   write_test_file="${database_directory}/.write_test"
-  if touch "$write_test_file" 2> /dev/null; then
+  if touch "${write_test_file}" 2> /dev/null; then
     # Deleting it if it was created successfully
-    rm -f "$write_test_file"
+    rm -f "${write_test_file}"
   else
-    err "The database directory '$database_directory' is not writable!"
+    err "The database directory '${database_directory}' is not writable!"
     exit 1
   fi
 
-  info "The database directory '$database_directory' found and ready for use."
+  info "The database directory '${database_directory}' found and ready for use."
 
 } # check_directory_exists_and_writable()
 
@@ -278,11 +278,11 @@ read_license_key() {
   local conf_file="$1"
   local license_key
 
-  license_key=$(grep -oP '^LicenseKey\s+\K\S+' "$conf_file")
+  license_key=$(grep -oP '^LicenseKey\s+\K\S+' "${conf_file}")
 
   # Checking the existence of the 'LicenseKey' in the configuration file
-  if [[ -z "$license_key" ]]; then
-    err "The 'LicenseKey' parameter is empty or missing in '$conf_file'!"
+  if [[ -z "${license_key}" ]]; then
+    err "The 'LicenseKey' parameter is empty or missing in '${conf_file}'!"
     exit 1
   fi
 
@@ -304,11 +304,11 @@ read_edition_ids() {
   local edition_ids
   local edition_ids_line
 
-  edition_ids_line=$(grep -Po "(?<=EditionIDs\s).*" "$conf_file")
+  edition_ids_line=$(grep -Po "(?<=EditionIDs\s).*" "${conf_file}")
 
   # Checking the existence of the 'EditionIDs' in the configuration file
-  if [[ -z "$edition_ids_line" ]]; then
-    err "The 'EditionIDs' parameter is empty or missing in '$conf_file'!"
+  if [[ -z "${edition_ids_line}" ]]; then
+    err "The 'EditionIDs' parameter is empty or missing in '${conf_file}'!"
     exit 1
   fi
 
@@ -320,7 +320,7 @@ read_edition_ids() {
   #  "GeoLite2-Country"
   #)
 
-  read -ra edition_ids <<< "$edition_ids_line"
+  read -ra edition_ids <<< "${edition_ids_line}"
 
   edition_ids_line=$(printf "'%s' " "${edition_ids[@]}")
   edition_ids_line=${edition_ids_line% }
@@ -405,23 +405,23 @@ download_database_archive() {
   # --connect-timeout : Wait no more than X seconds to establish a connection
   # --max-time : General limit time to download one file (optional, for security reasons)
   curl -sS \
-    --connect-timeout "$CURL_CONNECT_TIMEOUT" \
-    --max-time "$CURL_MAX_TIME" \
-    --output "${database_directory}/$archive_name" \
-    "$download_url" 2> /dev/null
+    --connect-timeout "${CURL_CONNECT_TIMEOUT}" \
+    --max-time "${CURL_MAX_TIME}" \
+    --output "${database_directory}/${archive_name}" \
+    "${download_url}" 2> /dev/null
 
   # Immediately save the curl return code to a variable
   # The $ variable? stores the status of the last executed command
   curl_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [[ "$curl_exit_code" -ne 0 ]]; then
-    err "Curl ended with the code: $curl_exit_code"
-    if [[ "$curl_exit_code" -eq 28 ]]; then
+  if [[ "${curl_exit_code}" -ne 0 ]]; then
+    err "Curl ended with the code: ${curl_exit_code}"
+    if [[ "${curl_exit_code}" -eq 28 ]]; then
       err "The timeout has expired for Curl"
-    elif [[ "$curl_exit_code" -eq 22 ]]; then
+    elif [[ "${curl_exit_code}" -eq 22 ]]; then
       err "The server returned an HTTP error (for example, 404 or 403 or 500)"
-    elif [[ "$curl_exit_code" -eq 23 ]]; then
+    elif [[ "${curl_exit_code}" -eq 23 ]]; then
       err "Error writing the file to disk."
     fi
     exit 1
@@ -444,10 +444,10 @@ check_database_archive() {
   # Checking if the file has been downloaded, or is there an error from the api?
   # The file command checks the file header. A correct archive will return "tar compressed data"
   if ! file "${database_directory}/${archive_name}" | grep -qi "tar"; then
-    err "MaxMind server error when downloading '$archive_name':"
+    err "MaxMind server error when downloading '${archive_name}':"
     # Output the error text (for example: "Invalid license key")
-    archive_error=$(cat "${database_directory}/$archive_name")
-    err "$archive_error"
+    archive_error=$(cat "${database_directory}/${archive_name}")
+    err "${archive_error}"
     exit 1
   fi
 
@@ -493,12 +493,12 @@ extract_database_from_archive() {
   # The $ variable? stores the status of the last executed command
   check_exit_code=$?
 
-  if [[ "$check_exit_code" -ne 0 ]]; then
+  if [[ "${check_exit_code}" -ne 0 ]]; then
     err "Database archive does not contain '${database_name}' or the archive is corrupted".
     exit 1
   fi
 
-  if [[ ! "$files" =~ ${database_name} ]]; then
+  if [[ ! "${files}" =~ ${database_name} ]]; then
     err "Database archive does not contain '${database_name}' or the archive is corrupted".
     exit 1
   fi
@@ -510,9 +510,9 @@ extract_database_from_archive() {
   extract_exit_code=$?
 
   # Checking the variable with the Curl Code
-  if [[ "$extract_exit_code" -ne 0 ]]; then
-    err "Tar ended with the code: $extract_exit_code"
-    if [[ "$extract_exit_code" -eq 2 ]]; then
+  if [[ "${extract_exit_code}" -ne 0 ]]; then
+    err "Tar ended with the code: ${extract_exit_code}"
+    if [[ "${extract_exit_code}" -eq 2 ]]; then
       err "The file was not found in the archive or the archive is corrupted"
     fi
     exit 1
@@ -544,17 +544,17 @@ main() {
   info "${version}"
 
   # Checking Config on exists
-  check_config_exists "$CONFIG_FILE"
+  check_config_exists "${CONFIG_FILE}"
 
   # Checking Directory on exists and writable
-  check_directory_exists_and_writable "$DATABASE_DIRECTORY"
+  check_directory_exists_and_writable "${DATABASE_DIRECTORY}"
 
   # Reading Licence name for downloading
   license_key=$(read_license_key "${CONFIG_FILE}")
 
   # Reading Database names for downloading
   editions_raw=$(read_edition_ids "${CONFIG_FILE}")
-  mapfile -t edition_ids <<< "$editions_raw"
+  mapfile -t edition_ids <<< "${editions_raw}"
 
   # In current point we are ready for downloading of databases
 
@@ -565,7 +565,7 @@ main() {
 
   for edition_id in "${edition_ids[@]}"; do
 
-    info "The current database is: '$edition_id'"
+    info "The current database is: '${edition_id}'"
 
     # Building download url for current database
     download_url="$(build_download_url "${edition_id}" "${license_key}")"
