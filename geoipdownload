@@ -105,19 +105,19 @@ version() {
 #
 usage() {
   cat << 'EOF'
-GeoIP and GeoLite Update Program.
+geoipdownload — GeoIP and GeoLite Update Program.
 
-Download MaxMind GeoIP databases listed in GeoIP.conf.
-
-The script expects GeoIP.conf in the default directory (or at the specified) and writes the
-downloaded .mmdb files in the default directory (or at the specified).
+A lightweight bash alternative to the official geoipupdate client from MaxMind.
+Guaranteed to work on Linux with the required dependencies installed.
+Downloads binary .mmdb files only (tar.gz), same as the official geoipupdate tool.
 
 Expected GeoIP.conf format:
   LicenseKey YOUR_LICENSE_KEY
   EditionIDs GeoLite2-City GeoLite2-Country
 
 
-Usage: geoipdownload [FLAGS] [-f CONFIG_FILE] [-d TARGET_DIRECTORY]
+USAGE:
+          geoipdownload [FLAGS] [-f CONFIG_FILE] [-d DATABASE_DIRECTORY]
 
 FLAGS:
 
@@ -125,19 +125,15 @@ FLAGS:
   -v, --verbose                 Print informational and error messages.
   -V, --version                 Current version of program.
 
-PARAMS (optional):
+PARAMS:
 
   -f, --config-file             Path to GeoIP.conf.
-                                If not specified, defaults to:
-                                  /etc/GeoIP.conf
-                                See GeoIP.conf and its documentation for
-                                more information.
+                                Defaults to: /etc/GeoIP.conf
+                                See GeoIP.conf and official documentation.
 
   -d, --database-directory      Path to Directory where .mmdb files will be written.
-                                If not specified, defaults to:
-                                  /usr/share/GeoIP
-                                For install databases to a custom directory
-                                you need check documentation.
+                                Defaults to: /usr/share/GeoIP
+                                See GeoIP.conf and official documentation.
 EOF
 }
 
