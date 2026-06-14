@@ -57,7 +57,9 @@ VERBOSE=0
 # Any message function template
 #
 message() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
+  local date
+  date=$(date +'%Y-%m-%dT%H:%M:%S%z')
+  echo "[${date}]: $*"
 } # mess()
 
 #
@@ -525,18 +527,21 @@ extract_database_from_archive() {
 #
 main() {
 
+  local version
   local license_key
   local edition_ids
   local edition_id
   local download_url
   local archive_name
   local database_name
+  local editions_raw
 
   # Parsing of arguments
   parse_and_default_args "$@"
 
   # Show current version
-  info "$(version)"
+  version=$(version)
+  info "${version}"
 
   # Checking Config on exists
   check_config_exists "$CONFIG_FILE"
@@ -548,7 +553,8 @@ main() {
   license_key=$(read_license_key "${CONFIG_FILE}")
 
   # Reading Database names for downloading
-  mapfile -t edition_ids < <(read_edition_ids "${CONFIG_FILE}")
+  editions_raw=$(read_edition_ids "${CONFIG_FILE}")
+  mapfile -t edition_ids <<< "$editions_raw"
 
   # In current point we are ready for downloading of databases
 
