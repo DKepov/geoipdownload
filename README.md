@@ -145,14 +145,36 @@ dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share
 
 ## Code Quality
 
-This script did checked with [ShellCheck](https://www.shellcheck.net/), a static analysis tool that catches common bugs and pitfalls in shell scripts. 
+This script was checked with two static analysis tools:
+
+**[ShellCheck](https://www.shellcheck.net/)** — catches common bugs and pitfalls in shell scripts.
 No warnings or errors are reported.
 
-You can verify it yourself:
+```bash
+shellcheck -s bash -o all -S style ./geoipdownload
+```
+
+**[shfmt](https://github.com/mvdan/sh)** — enforces consistent formatting for shell scripts.
+No diff output means the script is already correctly formatted.
 
 ```bash
-shellcheck geoipdownload
+shfmt -ln bash -i 2 -ci -sr -d ./geoipdownload
 ```
+
+You can verify it yourself.
+
+
+## Code Contributions
+
+Before submitting any commit, both checks must pass cleanly:
+
+```bash
+shellcheck -s bash -o all -S style ./geoipdownload
+shfmt -ln bash -i 2 -ci -sr -d ./geoipdownload
+```
+
+Neither command should produce any output or errors. A clean run is a required condition for accepting contributions.
+
 
 ## Useful MaxMind Resources
 
