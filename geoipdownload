@@ -32,6 +32,9 @@
 #   geoipdownload -f /etc/GeoIP.conf
 #   geoipdownload
 #
+# For full parameters description run:
+#   geoipdownload --help
+#
 #
 # References:
 #   https://dev.maxmind.com/geoip/updating-databases/
