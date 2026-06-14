@@ -15,22 +15,22 @@ err() {
 
 run_or_next() {
   # Check that the first argument is our command start marker
-  if [[ "$1" != ":::" ]]; then
-    echo "Syntax error run_or_next: missing token :::" >&2
+  if [[ $1 != ':::' ]]; then
+    echo 'Syntax error run_or_next: missing token :::' >&2
     exit 1
   fi
   shift # Remove ":::" from the argument list
 
   local cmd=()
   # We assemble the command until we encounter the message marker "::"
-  while [[ "$1" != "::" && $# -gt 0 ]]; do
+  while [[ $1 != '::' && $# -gt 0 ]]; do
     cmd+=("$1")
     shift
   done
 
   # Check if we found the "::" marker
-  if [[ "$1" != "::" ]]; then
-    echo "Syntax error run_or_next: missing token ::" >&2
+  if [[ $1 != '::' ]]; then
+    echo 'Syntax error run_or_next: missing token ::' >&2
     exit 1
   fi
   shift # Remove "::" from the argument list
