@@ -59,7 +59,7 @@ It's best to follow these steps:
 
 - `cd test` (in the current directory)
 - `mkdir -p check`
-- `cp ./../GeoIP.conf ./check/GeoIP.conf`
+- `cp ./../test-config/GeoIP.conf ./check/GeoIP.conf`
 - `cp ./../geoipdownload ./check/geoipdownload`
 - `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload`
 - `cd check`
