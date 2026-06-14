@@ -170,6 +170,11 @@ release_lock() {
 
   local lock_file="$1"
 
+  # Do nothing if the lock file does not exist
+  if [[ ! -f "${lock_file}" ]]; then
+    return 0
+  fi
+
   # Release the lock on file descriptor 9
   flock --unlock 9
 
@@ -594,15 +599,16 @@ main() {
   version=$(version)
   info "${version}"
 
-  # Acquire lock to prevent multiple simultaneous instances
-  acquire_lock "${LOCK_FILE}"
-  trap 'release_lock "${LOCK_FILE}"' EXIT
-
   # Checking Config on exists
   check_config_exists "${CONFIG_FILE}"
 
   # Checking Directory on exists and writable
   check_directory_exists_and_writable "${DATABASE_DIRECTORY}"
+
+  # Acquire lock to prevent multiple simultaneous instances
+  acquire_lock "${LOCK_FILE}"
+  # It is triggered at any exit — normal, by mistake, or by signal.
+  trap 'release_lock "${LOCK_FILE}"' EXIT
 
   # Reading Licence name for downloading
   license_key=$(read_license_key "${CONFIG_FILE}")
@@ -646,6 +652,9 @@ main() {
     info "The '${edition_id}' database has been updated."
 
   done
+
+  # Release lock to prevent multiple simultaneous instances
+  release_lock "${LOCK_FILE}"
 
   info "All GeoIP databases have been successfully updated!"
 
