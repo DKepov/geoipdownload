@@ -26,7 +26,11 @@ It reads configuration from a `GeoIP.conf` file (just like the official tool), d
 
 This script is ideal when you want a minimal, transparent, and easily auditable solution without installing the official Go-based `geoipupdate` tool.
 
+The script is guaranteed to work on Linux environments where all required dependencies are available.
+
 ## Requirements
+
+This script is guaranteed to work on Linux with the required dependencies installed.
 
 You most likely have the following dependencies. But you can check the list yourself.
 
