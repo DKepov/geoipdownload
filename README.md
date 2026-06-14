@@ -28,6 +28,9 @@ This script is ideal when you want a minimal, transparent, and easily auditable 
 
 The script is guaranteed to work on Linux environments where all required dependencies are available.
 
+This script is compatible with the `GeoIP.conf` configuration format used by the official `geoipupdate` tool up to version 4.0.0. 
+If you are already using the official client, you can switch to this script without changing your existing configuration file.
+
 ## Requirements
 
 This script is guaranteed to work on Linux with the required dependencies installed.
