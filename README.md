@@ -148,6 +148,7 @@ dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share
 [2026-06-23T03:05:36+0000]: [INFO]  The geoipdownload version: 1.0.0
 [2026-06-23T03:05:36+0000]: [INFO]  The configuration file 'GeoIP.conf' found and ready for use.
 [2026-06-23T03:05:36+0000]: [INFO]  The database directory '/usr/share/GeoIP' found and ready for use.
+[2026-06-23T03:05:36+0000]: [INFO]  Acquired lock on directory
 [2026-06-23T03:05:36+0000]: [INFO]  The 'LicenseKey' has been successfully read.
 [2026-06-23T03:05:36+0000]: [INFO]  The 'EditionIDs' has been successfully read.
 [2026-06-23T03:05:36+0000]: [INFO]  The following databases were found for download: ('GeoLite2-ASN' 'GeoLite2-City' 'GeoLite2-Country')
@@ -170,6 +171,7 @@ dkepov@dkepov:/current_project$ ./geoipdownload -f /etc/GeoIP.conf -d /usr/share
 [2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive ...
 [2026-06-23T03:05:36+0000]: [INFO]  Extracting the Database file from the Database archive is successfully
 [2026-06-23T03:05:36+0000]: [INFO]  The 'GeoLite2-Country' database has been updated.
+[2026-06-23T03:05:36+0000]: [INFO]  Released lock on directory
 [2026-06-23T03:05:36+0000]: [INFO]  All GeoIP databases have been successfully updated!
 ```
 
