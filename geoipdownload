@@ -159,7 +159,7 @@ acquire_lock() {
     exit 1
   fi
 
-  info "Lock acquired: '${lock_file}'"
+  info "Acquired lock on directory"
 
 } # acquire_lock()
 
@@ -176,7 +176,7 @@ release_lock() {
   # Remove the lock file
   rm -f "${lock_file}"
 
-  info "Lock released: '${lock_file}'"
+  info "Released lock on directory"
 
 } # release_lock()
 
@@ -590,13 +590,13 @@ main() {
   # Parsing of arguments
   parse_and_default_args "$@"
 
-  # Acquire lock to prevent multiple simultaneous instances
-  acquire_lock "${LOCK_FILE}"
-  trap 'release_lock "${LOCK_FILE}"' EXIT
-
   # Show current version
   version=$(version)
   info "${version}"
+
+  # Acquire lock to prevent multiple simultaneous instances
+  acquire_lock "${LOCK_FILE}"
+  trap 'release_lock "${LOCK_FILE}"' EXIT
 
   # Checking Config on exists
   check_config_exists "${CONFIG_FILE}"
