@@ -429,11 +429,13 @@ read_edition_ids() {
 build_download_url() {
 
   local edition_id="$1"
-  local license_key="$2"
   local url="${DOWNLOAD_URL_TEMPLATE}"
+  local date="${CURRENT_DATE}"
+  local type="${DOWNLOAD_TYPE}"
 
   url="${url/EDITION_ID/${edition_id}}"
-  url="${url/LICENSE_KEY/${license_key}}"
+  url="${url/DATE/${date}}"
+  url="${url/TYPE/${type}}"
 
   printf '%s' "${url}"
 
@@ -667,7 +669,7 @@ main() {
     info "The current database is: '${edition_id}'"
 
     # Building download url for current database
-    download_url="$(build_download_url "${edition_id}" "${license_key}")"
+    download_url="$(build_download_url "${edition_id}")"
 
     # Building archive name for current database
     archive_name="$(build_archive_name "${edition_id}")"
