@@ -57,6 +57,7 @@ readonly VERSION='0.100.0'
 readonly DOWNLOAD_URL_TEMPLATE='https://updates.maxmind.com/geoip/databases/EDITION_ID/download?date=DATE&suffix=TYPE'
 readonly CURL_CONNECT_TIMEOUT=5
 readonly CURL_MAX_TIME=60
+readonly DOWNLOAD_TYPE='tar.gz'
 readonly DATABASE_ARCHIVE_SUFFIX='.mmdb.tar.gz'
 readonly DATABASE_FILE_SUFFIX='.mmdb'
 
@@ -73,6 +74,10 @@ DATABASE_DIRECTORY=""
 
 # Verbose mode
 VERBOSE=0
+
+# Current date
+CURRENT_DATE=$(date +'%Y%m%d')
+readonly CURRENT_DATE
 
 #
 # Any message function template
