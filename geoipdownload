@@ -65,7 +65,7 @@ readonly DATABASE_ARCHIVE_SUFFIX='.mmdb.tar.gz'
 readonly DATABASE_FILE_SUFFIX='.mmdb'
 
 # Lock file
-readonly LOCK_FILE='/tmp/geoipdownload.lock'
+readonly LOCK_FILE='.geoipdownload.lock'
 
 # Defaults
 readonly DEFAULT_CONFIG_FILE='/etc/GeoIP.conf'
@@ -654,9 +654,9 @@ main() {
   check_directory_exists_and_writable "${DATABASE_DIRECTORY}"
 
   # Acquire lock to prevent multiple simultaneous instances
-  acquire_lock "${LOCK_FILE}"
+  acquire_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"
   # It is triggered at any exit — normal, by mistake, or by signal.
-  trap 'release_lock "${LOCK_FILE}"' EXIT
+  trap 'release_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"' EXIT
 
   # Reading Account ID name for downloading
   account_id=$(read_account_id "${CONFIG_FILE}")
@@ -705,7 +705,7 @@ main() {
   done
 
   # Release lock to prevent multiple simultaneous instances
-  release_lock "${LOCK_FILE}"
+  release_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"
 
   info "All GeoIP databases have been successfully updated!"
 
