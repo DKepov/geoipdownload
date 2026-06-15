@@ -171,6 +171,9 @@ acquire_lock() {
     exit 1
   fi
 
+  # Write the current process PID to the lock file
+  echo $$ > "${lock_file}"
+
   info "Acquired lock on directory"
 
 } # acquire_lock()
