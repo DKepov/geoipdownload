@@ -498,15 +498,16 @@ download_database_archive() {
 
   # CURL settings:
   # -sS : Hide the progress bar, but show a network error if it happens
-  # -L : Automatically navigates through redirects.
   # -user : Basic Authorization <user:password>
   # --user-agent : Header for User-Agent
+  # --location : Automatically navigates through redirects.
   # --fail : Return an error code if the server responds with 404, 500, etc.
   # --connect-timeout : Wait no more than X seconds to establish a connection
   # --max-time : General limit time to download one file (optional, for security reasons)
-  curl -sS -L \
+  curl -sS \
     --user "${account_id}:${license_key}" \
     --user-agent "${PROGRAM}" \
+    --location \
     --connect-timeout "${CURL_CONNECT_TIMEOUT}" \
     --max-time "${CURL_MAX_TIME}" \
     --output "${database_directory}/${archive_name}" \
