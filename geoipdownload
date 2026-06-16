@@ -714,7 +714,8 @@ main() {
 
   # Checking for exists Config or Exit
   # Errors we have in output
-  if [[ $? -ne 0 && -z "${config_file}" ]]; then
+  if [[ -z "${config_file}" ]]; then
+    err 'The configuration file was not found anywhere.'
     exit 1
   fi
 
@@ -734,7 +735,8 @@ main() {
 
   # Checking for exists Database Directory or Exit
   # Errors we have in output
-  if [[ $? -ne 0 && -z "${database_directory}" ]]; then
+  if [[ -z "${database_directory}" ]]; then
+    err 'The database directory was not found anywhere.'
     exit 1
   fi
 
