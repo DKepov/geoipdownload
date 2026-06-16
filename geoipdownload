@@ -590,6 +590,8 @@ delete_database_archive() {
 
   rm -f "${database_directory}/${archive_name}"
 
+  printf '%s' "${database_directory}/${archive_name}"
+
 } # delete_database_archive()
 
 #
@@ -666,6 +668,7 @@ main() {
   local downloaded_database_archive
   local checked_database_archive
   local extracted_database_from_archive
+  local deleted_database_archive
   local config_file_param="${CONFIG_FILE}"
   local database_directory_param="${DATABASE_DIRECTORY}"
   local lock_file="${LOCK_FILE}"
@@ -728,7 +731,7 @@ main() {
     extracted_database_from_archive=$(extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}")
 
     # Deleting for archive database
-    delete_database_archive "${database_directory}" "${archive_name}"
+    deleted_database_archive=$(delete_database_archive "${database_directory}" "${archive_name}")
 
     info "The '${edition_id}' database has been updated."
 
