@@ -68,8 +68,10 @@ readonly DATABASE_FILE_SUFFIX='.mmdb'
 readonly LOCK_FILE='.geoipdownload.lock'
 
 # Defaults
-readonly DEFAULT_CONFIG_FILE='/etc/GeoIP.conf'
-readonly DEFAULT_DATABASE_DIRECTORY='/usr/share/GeoIP'
+readonly DEFAULT_CONFIG_FILE_ORIG='/etc/GeoIP.conf'
+readonly DEFAULT_DATABASE_DIRECTORY_ORIG='/usr/share/GeoIP'
+readonly DEFAULT_CONFIG_FILE_NEW='/usr/local/etc/GeoIP.conf'
+readonly DEFAULT_DATABASE_DIRECTORY_NEW='/usr/local/share/GeoIP'
 
 # Variables (will be filled in in the future)
 CONFIG_FILE=''
@@ -273,13 +275,11 @@ parse_and_default_args() {
 
   # Applying default values for missing required parameters
   if [[ -z "${CONFIG_FILE}" ]]; then
-    CONFIG_FILE="${DEFAULT_CONFIG_FILE}"
-    info "The '--config-file (-f)' parameter was not specified. Using default: '${CONFIG_FILE}'"
+    info "The '--config-file (-f)' parameter was not specified. It will be used by default."
   fi
 
   if [[ -z "${DATABASE_DIRECTORY}" ]]; then
-    DATABASE_DIRECTORY="${DEFAULT_DATABASE_DIRECTORY}"
-    info "The '--database-directory (-d)' parameter was not specified. Using default: '${DATABASE_DIRECTORY}'"
+    info "The '--database-directory (-d)' parameter was not specified. It will be used by default."
   fi
 
 } # parse_and_default_args()
