@@ -677,6 +677,10 @@ main() {
   local database_directory_param='' # The variable is empty here
   local lock_file="${LOCK_FILE}"
 
+  # Show current version
+  version=$(version)
+  info "${version}"
+
   # Parsing of arguments
   parse_and_default_args "$@"
 
@@ -685,10 +689,6 @@ main() {
   # see: parse_and_default_args()
   config_file_param="${CONFIG_FILE}"
   database_directory_param="${DATABASE_DIRECTORY}"
-
-  # Show current version
-  version=$(version)
-  info "${version}"
 
   # Checking Config on exists
   config_file=$(take_checked_config_exists "${config_file_param}")
