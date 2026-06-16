@@ -677,6 +677,9 @@ main() {
   local deleted_database_archive
   local config_file_param=''        # The variable is empty here
   local database_directory_param='' # The variable is empty here
+  local _config_file_candidate
+  local config_file_orig="${DEFAULT_CONFIG_FILE_ORIG}"
+  local config_file_new="${DEFAULT_CONFIG_FILE_NEW}"
   local lock_file="${LOCK_FILE}"
 
   # Show current version
@@ -692,8 +695,22 @@ main() {
   config_file_param="${CONFIG_FILE}"
   database_directory_param="${DATABASE_DIRECTORY}"
 
-  # Checking Config on exists
-  config_file=$(take_checked_config_exists "${config_file_param}")
+  # Loop by Config file places
+  # Important: This is Sorted list
+  # Note: The first file that comes to hand is our working file.
+  for _config_file_candidate in "${config_file_param}" "${config_file_orig}" "${config_file_new}"; do
+
+    # Checking Config on exists
+    config_file=$(take_checked_config_exists "${_config_file_candidate}")
+    if [[ $? -eq 0 && -n "${config_file}" ]]; then
+      break
+    fi
+
+  done
+  # After the release, we should already have a value
+
+  # Checking for exists Config or Exit
+  # Errors we have in output
   if [[ $? -ne 0 && -z "${config_file}" ]]; then
     exit 1
   fi
