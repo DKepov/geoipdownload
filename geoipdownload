@@ -544,6 +544,8 @@ download_database_archive() {
     exit 1
   fi
 
+  printf '%s' "${database_directory}/${archive_name}"
+
 } # download_database_archive()
 
 #
@@ -657,6 +659,7 @@ main() {
   local archive_name
   local database_name
   local editions_raw
+  local downloaded_database_archive
   local config_file_param="${CONFIG_FILE}"
   local database_directory_param="${DATABASE_DIRECTORY}"
   local lock_file="${LOCK_FILE}"
@@ -710,7 +713,7 @@ main() {
     database_name="$(build_database_name "${edition_id}")"
 
     # Downloading archive database from download_url into archive_name
-    download_database_archive "${database_directory}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}"
+    downloaded_database_archive=$(download_database_archive "${database_directory}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}")
 
     # Checking for archive database on valid type
     check_database_archive "${database_directory}" "${archive_name}"
