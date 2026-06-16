@@ -548,8 +548,10 @@ check_database_archive() {
   local archive_error=""
 
   # Checking if the file has been downloaded, or is there an error from the api?
-  # The file command checks the file header. A correct archive will return "tar compressed data"
-  if ! file "${database_directory}/${archive_name}" | grep -qi "tar"; then
+  # tar -tzf attempts to read the file as a real gzip+tar archive.
+  # This is more reliable than checking file headers via the file command,
+  # which may return different strings depending on OS and version.
+  if ! tar -tzf "${database_directory}/${archive_name}" > /dev/null 2>&1; then
     err "MaxMind server error when downloading '${archive_name}':"
     # Output the error text (for example: "Invalid license key")
     archive_error=$(cat "${database_directory}/${archive_name}")
