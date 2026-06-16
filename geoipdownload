@@ -286,7 +286,7 @@ parse_and_default_args() {
 # Checking Config on exists
 # We display errors and information messages inside
 #
-check_config_exists() {
+take_checked_config_exists() {
 
   local conf_file="$1"
 
@@ -302,7 +302,9 @@ check_config_exists() {
 
   info "The configuration file '${conf_file}' found and ready for use."
 
-} # check_config_exists()
+  printf '%s' "${conf_file}"
+
+} # take_checked_config_exists()
 
 #
 # Check Directory exists and writable
@@ -310,7 +312,7 @@ check_config_exists() {
 # Checking Directory on exists and writable
 # We display errors and information messages inside
 #
-check_directory_exists_and_writable() {
+take_checked_directory_exists_and_writable() {
 
   local database_directory="$1"
 
@@ -336,7 +338,9 @@ check_directory_exists_and_writable() {
 
   info "The database directory '${database_directory}' found and ready for use."
 
-} # check_directory_exists_and_writable()
+  printf '%s' "${database_directory}"
+
+} # take_checked_directory_exists_and_writable()
 
 #
 # Read account id
@@ -636,6 +640,8 @@ extract_database_from_archive() {
 main() {
 
   local version
+  local config_file
+  local database_directory
   local account_id
   local license_key
   local edition_ids
@@ -653,10 +659,10 @@ main() {
   info "${version}"
 
   # Checking Config on exists
-  check_config_exists "${CONFIG_FILE}"
+  config_file=$(take_checked_config_exists "${CONFIG_FILE}")
 
   # Checking Directory on exists and writable
-  check_directory_exists_and_writable "${DATABASE_DIRECTORY}"
+  database_directory=$(take_checked_directory_exists_and_writable "${DATABASE_DIRECTORY}")
 
   # Acquire lock to prevent multiple simultaneous instances
   acquire_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"
