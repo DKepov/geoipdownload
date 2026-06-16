@@ -669,12 +669,18 @@ main() {
   local checked_database_archive
   local extracted_database_from_archive
   local deleted_database_archive
-  local config_file_param="${CONFIG_FILE}"
-  local database_directory_param="${DATABASE_DIRECTORY}"
+  local config_file_param=''        # The variable is empty here
+  local database_directory_param='' # The variable is empty here
   local lock_file="${LOCK_FILE}"
 
   # Parsing of arguments
   parse_and_default_args "$@"
+
+  # Important: repeated assignment!
+  # Because the variables were unambiguously empty before parsing the variables
+  # see: parse_and_default_args()
+  config_file_param="${CONFIG_FILE}"
+  database_directory_param="${DATABASE_DIRECTORY}"
 
   # Show current version
   version=$(version)
