@@ -665,18 +665,18 @@ main() {
   database_directory=$(take_checked_directory_exists_and_writable "${DATABASE_DIRECTORY}")
 
   # Acquire lock to prevent multiple simultaneous instances
-  acquire_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"
+  acquire_lock "${database_directory}/${LOCK_FILE}"
   # It is triggered at any exit — normal, by mistake, or by signal.
-  trap 'release_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"' EXIT
+  trap 'release_lock "${database_directory}/${LOCK_FILE}"' EXIT
 
   # Reading Account ID name for downloading
-  account_id=$(read_account_id "${CONFIG_FILE}")
+  account_id=$(read_account_id "${config_file}")
 
   # Reading Licence name for downloading
-  license_key=$(read_license_key "${CONFIG_FILE}")
+  license_key=$(read_license_key "${config_file}")
 
   # Reading Database names for downloading
-  editions_raw=$(read_edition_ids "${CONFIG_FILE}")
+  editions_raw=$(read_edition_ids "${config_file}")
   mapfile -t edition_ids <<< "${editions_raw}"
 
   # In current point we are ready for downloading of databases
@@ -700,23 +700,23 @@ main() {
     database_name="$(build_database_name "${edition_id}")"
 
     # Downloading archive database from download_url into archive_name
-    download_database_archive "${DATABASE_DIRECTORY}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}"
+    download_database_archive "${database_directory}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}"
 
     # Checking for archive database on valid type
-    check_database_archive "${DATABASE_DIRECTORY}" "${archive_name}"
+    check_database_archive "${database_directory}" "${archive_name}"
 
     # Extracting database from archive into single database file
-    extract_database_from_archive "${DATABASE_DIRECTORY}" "${archive_name}" "${database_name}"
+    extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}"
 
     # Deleting for archive database
-    delete_database_archive "${DATABASE_DIRECTORY}" "${archive_name}"
+    delete_database_archive "${database_directory}" "${archive_name}"
 
     info "The '${edition_id}' database has been updated."
 
   done
 
   # Release lock to prevent multiple simultaneous instances
-  release_lock "${DATABASE_DIRECTORY}/${LOCK_FILE}"
+  release_lock "${database_directory}/${LOCK_FILE}"
 
   info 'All GeoIP databases have been successfully updated!'
 
