@@ -650,12 +650,12 @@ extract_database_from_archive() {
   check_exit_code=$?
 
   if [[ "${check_exit_code}" -ne 0 ]]; then
-    err "Database archive does not contain '${database_name}' or the archive is corrupted".
+    err "Database archive does not contain '${database_name}' or the archive is corrupted"
     return 1
   fi
 
   if [[ ! "${files}" =~ ${database_name} ]]; then
-    err "Database archive does not contain '${database_name}' or the archive is corrupted".
+    err "Database archive does not contain '${database_name}' or the archive is corrupted"
     return 1
   fi
 
@@ -665,7 +665,7 @@ extract_database_from_archive() {
   # The $ variable? stores the status of the last executed command
   extract_exit_code=$?
 
-  # Checking the variable with the Curl Code
+  # Checking the variable with the Tar Code
   if [[ "${extract_exit_code}" -ne 0 ]]; then
     err "Tar ended with the code: ${extract_exit_code}"
     if [[ "${extract_exit_code}" -eq 2 ]]; then
