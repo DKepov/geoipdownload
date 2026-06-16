@@ -1,13 +1,13 @@
 #!/bin/bash
 
-PROJECT_DIR="$(pwd)/../"
+PROJECT_DIR="$(pwd)/../../"
 PROJECT_DIR="$(realpath "${PROJECT_DIR}")"
 readonly PROJECT_DIR
 
-readonly CURRENT_DIR="${PROJECT_DIR}/test"
+readonly TEST_DIR="${PROJECT_DIR}/test"
 readonly CONFIG_DIR="${PROJECT_DIR}/test-conf"
 readonly DATABASE_DIR="${PROJECT_DIR}/test-data"
-readonly CHECK_DIR="${CURRENT_DIR}/check"
+readonly CHECK_DIR="${TEST_DIR}/check"
 
 err() {
   echo "$@" >&2
@@ -58,6 +58,6 @@ run_or_next ::: cd "${CHECK_DIR}" :: err 'Can not open the Test directory:' "${C
 
 ./geoipdownload -f 'GeoIP.conf' -d '.' -v # Running without Error Suppression
 
-run_or_next ::: cd "${CURRENT_DIR}" :: err 'Can not leave the Test directory:' "${CURRENT_DIR}"
+run_or_next ::: cd "${TEST_DIR}" :: err 'Can not leave to the Test directory:' "${TEST_DIR}"
 
 run_or_next ::: rm -rf "${CHECK_DIR}" :: err 'Can not remove the Test directory:' "${CHECK_DIR}"
