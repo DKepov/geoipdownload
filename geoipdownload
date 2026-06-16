@@ -643,6 +643,8 @@ extract_database_from_archive() {
 
   info 'Extracting the Database file from the Database archive is successfully'
 
+  printf '%s' "${database_directory}/${database_name}"
+
 } # extract_database_from_archive()
 
 #
@@ -663,6 +665,7 @@ main() {
   local editions_raw
   local downloaded_database_archive
   local checked_database_archive
+  local extracted_database_from_archive
   local config_file_param="${CONFIG_FILE}"
   local database_directory_param="${DATABASE_DIRECTORY}"
   local lock_file="${LOCK_FILE}"
@@ -722,7 +725,7 @@ main() {
     checked_database_archive=$(check_database_archive "${database_directory}" "${archive_name}")
 
     # Extracting database from archive into single database file
-    extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}"
+    extracted_database_from_archive=$(extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}")
 
     # Deleting for archive database
     delete_database_archive "${database_directory}" "${archive_name}"
