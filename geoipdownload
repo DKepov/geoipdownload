@@ -650,6 +650,9 @@ main() {
   local archive_name
   local database_name
   local editions_raw
+  local config_file_param="${CONFIG_FILE}"
+  local database_directory_param="${DATABASE_DIRECTORY}"
+  local lock_file="${LOCK_FILE}"
 
   # Parsing of arguments
   parse_and_default_args "$@"
@@ -659,15 +662,15 @@ main() {
   info "${version}"
 
   # Checking Config on exists
-  config_file=$(take_checked_config_exists "${CONFIG_FILE}")
+  config_file=$(take_checked_config_exists "${config_file_param}")
 
   # Checking Directory on exists and writable
-  database_directory=$(take_checked_directory_exists_and_writable "${DATABASE_DIRECTORY}")
+  database_directory=$(take_checked_directory_exists_and_writable "${database_directory_param}")
 
   # Acquire lock to prevent multiple simultaneous instances
-  acquire_lock "${database_directory}/${LOCK_FILE}"
+  acquire_lock "${database_directory}/${lock_file}"
   # It is triggered at any exit — normal, by mistake, or by signal.
-  trap 'release_lock "${database_directory}/${LOCK_FILE}"' EXIT
+  trap 'release_lock "${database_directory}/${lock_file}"' EXIT
 
   # Reading Account ID name for downloading
   account_id=$(read_account_id "${config_file}")
@@ -716,7 +719,7 @@ main() {
   done
 
   # Release lock to prevent multiple simultaneous instances
-  release_lock "${database_directory}/${LOCK_FILE}"
+  release_lock "${database_directory}/${lock_file}"
 
   info 'All GeoIP databases have been successfully updated!'
 
