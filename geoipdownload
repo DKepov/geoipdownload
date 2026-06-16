@@ -294,6 +294,8 @@ take_checked_config_exists() {
 
   local conf_file="$1"
 
+  info "Looking configuration file by path: ${conf_file}"
+
   if [[ ! -f "${conf_file}" ]]; then
     err "The configuration file '${conf_file}' not found!"
     return 1
@@ -319,6 +321,8 @@ take_checked_config_exists() {
 take_checked_directory_exists_and_writable() {
 
   local database_directory="$1"
+
+  info "Looking database directory by path: ${database_directory}"
 
   if [[ ! -d "${database_directory}" ]]; then
     err "The database directory '${database_directory}' not found!"
