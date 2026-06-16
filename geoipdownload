@@ -643,7 +643,7 @@ extract_database_from_archive() {
   # Downloading Bases
   info 'Extracting the Database file from the Database archive ...'
 
-  files=$(tar -tf "${archive_name}" -C "${database_directory}" 2> /dev/null)
+  files=$(tar -tf "${database_directory}/${archive_name}" 2> /dev/null)
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
@@ -659,7 +659,7 @@ extract_database_from_archive() {
     return 1
   fi
 
-  tar -zxf "${archive_name}" -C "${database_directory}" "${database_name}" 2> /dev/null
+  tar -zxf "${database_directory}/${archive_name}" -C "${database_directory}" "${database_name}" 2> /dev/null
 
   # Immediately save the tar return code to a variable
   # The $ variable? stores the status of the last executed command
