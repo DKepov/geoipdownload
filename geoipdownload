@@ -698,26 +698,41 @@ main() {
   config_file_param="${CONFIG_FILE}"
   database_directory_param="${DATABASE_DIRECTORY}"
 
-  # Loop by Config file places
-  # Important: This is Sorted list
-  # Note: The first file that comes to hand is our working file.
-  for _config_file_candidate in "${config_file_param}" "${config_file_orig}" "${config_file_new}"; do
+  # If the parameter is set, then we check only where specified.
+  if [[ -n "${config_file_param}" ]]; then
 
     # Checking Config on exists
-    config_file=$(take_checked_config_exists "${_config_file_candidate}")
-    if [[ $? -eq 0 && -n "${config_file}" ]]; then
-      break
+    config_file=$(take_checked_config_exists "${config_file_param}")
+    if [[ $? -ne 0 && -z "${config_file}" ]]; then
+      exit 1
     fi
 
-  done
-  # After the release, we should already have a value
+  # Otherwise, we're going through the possible locations.
+  else
 
-  # Checking for exists Config or Exit
-  # Errors we have in output
-  if [[ -z "${config_file}" ]]; then
-    err 'The configuration file was not found anywhere.'
-    exit 1
+    # Loop by Config file places
+    # Important: This is Sorted list
+    # Note: The first file that comes to hand is our working file.
+    for _config_file_candidate in "${config_file_orig}" "${config_file_new}"; do
+
+      # Checking Config on exists
+      config_file=$(take_checked_config_exists "${_config_file_candidate}")
+      if [[ $? -eq 0 && -n "${config_file}" ]]; then
+        break
+      fi
+
+    done
+    # After the release, we should already have a value
+
+    # Checking for exists Config or Exit
+    # Errors we have in output
+    if [[ -z "${config_file}" ]]; then
+      err 'The configuration file was not found anywhere.'
+      exit 1
+    fi
+
   fi
+  # End checking for configuration file
 
   # Loop by Database Directories places
   # Important: This is Sorted list
