@@ -729,7 +729,7 @@ main() {
 
     # Checking Config on exists
     config_file=$(take_checked_config_exists "${config_file_param}")
-    if [[ $? -ne 0 && -z "${config_file}" ]]; then
+    if [[ $? -ne 0 || -z "${config_file}" ]]; then
       exit 1
     fi
 
@@ -765,7 +765,7 @@ main() {
 
     # Checking Directory on exists and writable
     database_directory=$(take_checked_directory_exists_and_writable "${database_directory_param}")
-    if [[ $? -ne 0 && -z "${database_directory}" ]]; then
+    if [[ $? -ne 0 || -z "${database_directory}" ]]; then
       exit 1
     fi
 
@@ -810,19 +810,19 @@ main() {
 
   # Reading Account ID name for downloading
   account_id=$(read_account_id "${config_file}")
-  if [[ $? -ne 0 && -z "${account_id}" ]]; then
+  if [[ $? -ne 0 || -z "${account_id}" ]]; then
     exit 1
   fi
 
   # Reading Licence name for downloading
   license_key=$(read_license_key "${config_file}")
-  if [[ $? -ne 0 && -z "${license_key}" ]]; then
+  if [[ $? -ne 0 || -z "${license_key}" ]]; then
     exit 1
   fi
 
   # Reading Database names for downloading
   editions_raw=$(read_edition_ids "${config_file}")
-  if [[ $? -ne 0 && -z "${editions_raw}" ]]; then
+  if [[ $? -ne 0 || -z "${editions_raw}" ]]; then
     exit 1
   fi
   mapfile -t edition_ids <<< "${editions_raw}"
@@ -840,43 +840,43 @@ main() {
 
     # Building download url for current database
     download_url="$(build_download_url "${edition_id}")"
-    if [[ $? -ne 0 && -z "${download_url}" ]]; then
+    if [[ $? -ne 0 || -z "${download_url}" ]]; then
       exit 1
     fi
 
     # Building archive name for current database
     archive_name="$(build_archive_name "${edition_id}")"
-    if [[ $? -ne 0 && -z "${archive_name}" ]]; then
+    if [[ $? -ne 0 || -z "${archive_name}" ]]; then
       exit 1
     fi
 
     # Building database name for current database
     database_name="$(build_database_name "${edition_id}")"
-    if [[ $? -ne 0 && -z "${database_name}" ]]; then
+    if [[ $? -ne 0 || -z "${database_name}" ]]; then
       exit 1
     fi
 
     # Downloading archive database from download_url into archive_name
     downloaded_database_archive=$(download_database_archive "${database_directory}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}")
-    if [[ $? -ne 0 && -z "${downloaded_database_archive}" ]]; then
+    if [[ $? -ne 0 || -z "${downloaded_database_archive}" ]]; then
       exit 1
     fi
 
     # Checking for archive database on valid type
     checked_database_archive=$(check_database_archive "${database_directory}" "${archive_name}")
-    if [[ $? -ne 0 && -z "${checked_database_archive}" ]]; then
+    if [[ $? -ne 0 || -z "${checked_database_archive}" ]]; then
       exit 1
     fi
 
     # Extracting database from archive into single database file
     extracted_database_from_archive=$(extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}")
-    if [[ $? -ne 0 && -z "${extracted_database_from_archive}" ]]; then
+    if [[ $? -ne 0 || -z "${extracted_database_from_archive}" ]]; then
       exit 1
     fi
 
     # Deleting for archive database
     deleted_database_archive=$(delete_database_archive "${database_directory}" "${archive_name}")
-    if [[ $? -ne 0 && -z "${deleted_database_archive}" ]]; then
+    if [[ $? -ne 0 || -z "${deleted_database_archive}" ]]; then
       exit 1
     fi
 
