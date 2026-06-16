@@ -104,7 +104,9 @@ err() {
 # Info message
 #
 info() {
-  if [[ "${VERBOSE}" -eq 1 ]]; then
+  local verbose=${VERBOSE}
+
+  if [[ "${verbose}" -eq 1 ]]; then
     local msg
     msg=$(message '[INFO] ' "$*")
     echo "${msg}" >&2
@@ -115,7 +117,9 @@ info() {
 # Version of program
 #
 version() {
-  echo "geoipdownload ${VERSION}"
+  local version=${VERSION}
+
+  echo "geoipdownload ${version}"
 } # version()
 
 #
@@ -499,6 +503,9 @@ download_database_archive() {
   local download_url="$4"
   local archive_name="$5"
   local curl_exit_code=0
+  local curl_agent_program=${PROGRAM}
+  local curl_connect_timeout=${CURL_CONNECT_TIMEOUT}
+  local curl_max_time=${CURL_MAX_TIME}
 
   # Downloading Bases
   info 'Downloading the database archive from the MaxMind server ...'
@@ -513,10 +520,10 @@ download_database_archive() {
   # --max-time : General limit time to download one file (optional, for security reasons)
   curl -sS \
     --user "${account_id}:${license_key}" \
-    --user-agent "${PROGRAM}" \
+    --user-agent "${curl_agent_program}" \
     --location \
-    --connect-timeout "${CURL_CONNECT_TIMEOUT}" \
-    --max-time "${CURL_MAX_TIME}" \
+    --connect-timeout "${curl_connect_timeout}" \
+    --max-time "${curl_max_time}" \
     --output "${database_directory}/${archive_name}" \
     "${download_url}" 2> /dev/null
 
