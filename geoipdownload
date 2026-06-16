@@ -734,26 +734,41 @@ main() {
   fi
   # End checking for configuration file
 
-  # Loop by Database Directories places
-  # Important: This is Sorted list
-  # Note: The first database directory that comes to hand is our working directory.
-  for _database_directory_candidate in "${database_directory_param}" "${database_directory_orig}" "${database_directory_new}"; do
+  # If the parameter is set, then we check only where specified.
+  if [[ -n "${database_directory_param}" ]]; then
 
     # Checking Directory on exists and writable
-    database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}")
-    if [[ $? -eq 0 && -n "${database_directory}" ]]; then
-      break
+    database_directory=$(take_checked_directory_exists_and_writable "${database_directory_param}")
+    if [[ $? -ne 0 && -z "${database_directory}" ]]; then
+      exit 1
     fi
 
-  done
-  # After the release, we should already have a value
+  # Otherwise, we're going through the possible locations.
+  else
 
-  # Checking for exists Database Directory or Exit
-  # Errors we have in output
-  if [[ -z "${database_directory}" ]]; then
-    err 'The database directory was not found anywhere.'
-    exit 1
+    # Loop by Database Directories places
+    # Important: This is Sorted list
+    # Note: The first database directory that comes to hand is our working directory.
+    for _database_directory_candidate in "${database_directory_orig}" "${database_directory_new}"; do
+
+      # Checking Directory on exists and writable
+      database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}")
+      if [[ $? -eq 0 && -n "${database_directory}" ]]; then
+        break
+      fi
+
+    done
+    # After the release, we should already have a value
+
+    # Checking for exists Database Directory or Exit
+    # Errors we have in output
+    if [[ -z "${database_directory}" ]]; then
+      err 'The database directory was not found anywhere.'
+      exit 1
+    fi
+
   fi
+  # End checking for database directory
 
   # Acquire lock to prevent multiple simultaneous instances
   acquire_lock "${database_directory}/${lock_file}"
