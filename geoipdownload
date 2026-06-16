@@ -774,7 +774,7 @@ main() {
 
     # Note: Before going through the values, you need to get the value from the config
     # Getting the Database directory from the config file
-    database_directory_config=$(read_database_directory "${CONFIG_FILE}")
+    database_directory_config=$(read_database_directory "${config_file}")
     if [[ $? -ne 0 && -n "${database_directory_config}" ]]; then
       exit 1
     fi
