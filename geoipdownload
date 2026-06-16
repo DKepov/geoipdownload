@@ -153,10 +153,12 @@ PARAMS:
 
   -f, --config-file             Path to GeoIP.conf.
                                 Defaults to: /etc/GeoIP.conf
+                                Defaults to: /usr/local/etc/GeoIP.conf
                                 See GeoIP.conf and official documentation.
 
   -d, --database-directory      Path to Directory where .mmdb files will be written.
                                 Defaults to: /usr/share/GeoIP
+                                Defaults to: /usr/local/share/GeoIP
                                 See GeoIP.conf and official documentation.
 EOF
 }
