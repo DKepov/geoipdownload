@@ -574,6 +574,8 @@ check_database_archive() {
 
   info 'Downloading the database archive from the MaxMind server is successfully'
 
+  printf '%s' "${database_directory}/${archive_name}"
+
 } # check_database_archive()
 
 # Delete database archive
@@ -660,6 +662,7 @@ main() {
   local database_name
   local editions_raw
   local downloaded_database_archive
+  local checked_database_archive
   local config_file_param="${CONFIG_FILE}"
   local database_directory_param="${DATABASE_DIRECTORY}"
   local lock_file="${LOCK_FILE}"
@@ -716,7 +719,7 @@ main() {
     downloaded_database_archive=$(download_database_archive "${database_directory}" "${account_id}" "${license_key}" "${download_url}" "${archive_name}")
 
     # Checking for archive database on valid type
-    check_database_archive "${database_directory}" "${archive_name}"
+    checked_database_archive=$(check_database_archive "${database_directory}" "${archive_name}")
 
     # Extracting database from archive into single database file
     extract_database_from_archive "${database_directory}" "${archive_name}" "${database_name}"
