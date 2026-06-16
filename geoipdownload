@@ -680,6 +680,9 @@ main() {
   local _config_file_candidate
   local config_file_orig="${DEFAULT_CONFIG_FILE_ORIG}"
   local config_file_new="${DEFAULT_CONFIG_FILE_NEW}"
+  local _database_directory_candidate
+  local database_directory_orig="${DEFAULT_DATABASE_DIRECTORY_ORIG}"
+  local database_directory_new="${DEFAULT_DATABASE_DIRECTORY_NEW}"
   local lock_file="${LOCK_FILE}"
 
   # Show current version
@@ -715,8 +718,22 @@ main() {
     exit 1
   fi
 
-  # Checking Directory on exists and writable
-  database_directory=$(take_checked_directory_exists_and_writable "${database_directory_param}")
+  # Loop by Database Directories places
+  # Important: This is Sorted list
+  # Note: The first database directory that comes to hand is our working directory.
+  for _database_directory_candidate in "${database_directory_param}" "${database_directory_orig}" "${database_directory_new}"; do
+
+    # Checking Directory on exists and writable
+    database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}")
+    if [[ $? -eq 0 && -n "${database_directory}" ]]; then
+      break
+    fi
+
+  done
+  # After the release, we should already have a value
+
+  # Checking for exists Database Directory or Exit
+  # Errors we have in output
   if [[ $? -ne 0 && -z "${database_directory}" ]]; then
     exit 1
   fi
