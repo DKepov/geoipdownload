@@ -441,6 +441,31 @@ read_edition_ids() {
 } # read_edition_ids()
 
 #
+# Read database directory
+#
+# Reading database directory to variable
+# We display errors and information messages inside
+#
+read_database_directory() {
+
+  local conf_file="$1"
+  local database_directory
+
+  database_directory=$(grep -oP '^DatabaseDirectory\s+\K\S+' "${conf_file}")
+
+  # Checking the existence of the 'DatabaseDirectory' in the configuration file
+  if [[ -z "${database_directory}" ]]; then
+    err "The 'DatabaseDirectory' parameter is empty or missing in '${conf_file}'!"
+    return 1
+  fi
+
+  info "The 'DatabaseDirectory' has been successfully read."
+
+  printf '%s' "${database_directory}"
+
+} # read_database_directory()
+
+#
 # Build download url
 #
 # Building download url for current database
@@ -681,6 +706,7 @@ main() {
   local config_file_orig="${DEFAULT_CONFIG_FILE_ORIG}"
   local config_file_new="${DEFAULT_CONFIG_FILE_NEW}"
   local _database_directory_candidate
+  local database_directory_config
   local database_directory_orig="${DEFAULT_DATABASE_DIRECTORY_ORIG}"
   local database_directory_new="${DEFAULT_DATABASE_DIRECTORY_NEW}"
   local lock_file="${LOCK_FILE}"
@@ -746,10 +772,17 @@ main() {
   # Otherwise, we're going through the possible locations.
   else
 
+    # Note: Before going through the values, you need to get the value from the config
+    # Getting the Database directory from the config file
+    database_directory_config=$(read_database_directory "${CONFIG_FILE}")
+    if [[ $? -ne 0 && -n "${database_directory_config}" ]]; then
+      exit 1
+    fi
+
     # Loop by Database Directories places
     # Important: This is Sorted list
     # Note: The first database directory that comes to hand is our working directory.
-    for _database_directory_candidate in "${database_directory_orig}" "${database_directory_new}"; do
+    for _database_directory_candidate in "${database_directory_config}" "${database_directory_orig}" "${database_directory_new}"; do
 
       # Checking Directory on exists and writable
       database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}")
