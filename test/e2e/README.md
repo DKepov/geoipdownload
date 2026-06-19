@@ -1,78 +1,55 @@
-# geoipdownload
+# E2E* Tests for geoipdownload
 
-**GeoIP and GeoLite Update Program.**
+## Requirements
 
-Similar to the official ``geoipupdate`` client.
+- Bash 4.0+
 
 # Testing
 
-Testing requires some manipulation.
+This is end-to-end (e2e) testing with an imitation of the original server: 
+instead of contacting the real MaxMind server, we substitute the `DOWNLOAD_URL_TEMPLATE` constant 
+so that the program downloads files locally (via the `file://` protocol), using a fake config and a fake database directory.
 
-Since this is a small program and there's no goal of end-to-end testing, we can make things easier for ourselves.
+Three test scripts are provided. All of them are based on the same scenario, 
+differing only in which `geoipdownload` flags are passed and, accordingly, 
+which source is used for the config file and the database directory:
 
-# Why bother?
-
-Nobody's stopping you from testing with a real account.
-Even better.
-
-We need to conduct full end-to-end testing.
-You can take the following approach, the one below.
-
-We won't use a real server.
+| Script | Command | Config source | Database directory source |
+|---|---|---|---|
+| `test_with_c_and_d.bash` | `./geoipdownload -f GeoIP.conf -d . -v` | explicit `-f` flag | explicit `-d` flag |
+| `test_with_c_config.bash` | `./geoipdownload -f GeoIP.conf -v` | explicit `-f` flag | `DatabaseDirectory` value inside `GeoIP.conf` |
+| `test_with_c_default.bash` | `./geoipdownload -f GeoIP.conf -v` | explicit `-f` flag | program's default database directory (patched to the test directory) |
 
 ## Steps
 
-Required:
+All three scripts perform the same general sequence:
 
-- Use a config filled with placeholders
-- Simulate a server to serve files
-- Replace `DOWNLOAD_URL_TEMPLATE` with the URL in the program
+- Create a temporary `test/check` directory
+- Copy a placeholder `GeoIP.conf` config and the `geoipdownload` binary into it
+- Patch `DOWNLOAD_URL_TEMPLATE` inside the copied binary to point to `file://.../test-data/EDITION_ID.mmdb.tar.gz`
+- (`test_with_c_config.bash` and `test_with_c_default.bash` only) patch the binary's default config/database-directory constants to point to the test directory
+- (`test_with_c_config.bash` only) set the `DatabaseDirectory` value inside `GeoIP.conf` to the test directory
+- Run `geoipdownload` with the corresponding flags
+- Clean up the temporary directory
 
-## Preparing the server
+## Running
 
-The server must be run in the `test-data` directory.
-
-How to run the server in a `test-data` directory:
-
-- Python: `python -m http.server 8080`
-- PHP: `php -S localhost:8080`
-- NPX/Node.js: `npx http-server -p 8080`
-
-Checking that the server is running: [`http://localhost:8080`](http://localhost:8080)
-
-## Preparing the program
-
-Changes to the program:
-
-- Copy the program to another location
-- Open the (copied) program file
-- Replace the URL in the `DOWNLOAD_URL_TEMPLATE` constant with the following `http://localhost:8080/EDITION_ID.mmdb.tar.gz`
-- Save changes
-
-Note that for simplicity, we're changing the URL significantly.
-
-## Testing (manual)
-
-Important: You must run this without using actual files and directories.
-
-It's best to follow these steps:
-
-- `cd test` (in the current directory)
-- `mkdir -p check`
-- `cp ./../test-config/GeoIP.conf ./check/GeoIP.conf`
-- `cp ./../geoipdownload ./check/geoipdownload`
-- `sed -i "s|DOWNLOAD_URL_TEMPLATE='.*'|DOWNLOAD_URL_TEMPLATE='http://localhost:8080/EDITION_ID.mmdb.tar.gz'|g" ./check/geoipdownload`
-- `cd check`
-- `./geoipdownload -f GeoIP.conf -d . -v`
-
-## Testing (auto)
-
-Just run the Auto Test script in the current directory.
-
-Important: We will download files from the `test-data` directory via **Curl** with '**file:///**' protocol.
+Running with explicit arguments for Config and Directory in program:
 
 ```shell
-bash test.bash
+bash test_with_c_and_d.bash
+```
+
+Running with explicit Config argument, which have `DatabaseDirectory` path in Config-file:
+
+```shell
+bash test_with_c_config.bash
+```
+
+Running with explicit Config argument, which not have `DatabaseDirectory` path in Config-file, and we should use Defaults path:
+
+```shell
+bash test_with_c_default.bash
 ```
 
 
