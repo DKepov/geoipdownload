@@ -53,7 +53,7 @@ set -o nounset
 set -o pipefail
 
 # Current version
-readonly VERSION='0.120.0'
+readonly VERSION='0.130.0'
 
 # Current program
 readonly PROGRAM="geoipdownload/${VERSION}"
