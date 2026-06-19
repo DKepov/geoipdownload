@@ -804,9 +804,10 @@ main() {
   # End checking for database directory
 
   # Acquire lock to prevent multiple simultaneous instances
+  # Note: we will be use database directory, because we have access to write on this directory
   acquire_lock "${database_directory}/${lock_file}"
   # It is triggered at any exit — normal, by mistake, or by signal.
-  trap 'release_lock "${database_directory}/${lock_file}"' EXIT
+  trap '[[ -n "${database_directory:-}" ]] && release_lock "${database_directory}/${lock_file}"' EXIT
 
   # Reading Account ID name for downloading
   account_id=$(read_account_id "${config_file}")
@@ -885,6 +886,7 @@ main() {
   done
 
   # Release lock to prevent multiple simultaneous instances
+  # Note: we will be use database directory, because we have access to write on this directory
   release_lock "${database_directory}/${lock_file}"
 
   info 'All GeoIP databases have been successfully updated!'
