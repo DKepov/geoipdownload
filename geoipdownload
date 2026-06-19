@@ -295,16 +295,21 @@ parse_and_default_args() {
 take_checked_config_exists() {
 
   local conf_file="$1"
+  local with_info="${2:-'false'}"
+  local log_cmd
+
+  # If with_info=true, "info" is written, otherwise "err" is written
+  [[ $with_info == 'true' ]] && log_cmd="info" || log_cmd="err"
 
   info "Looking configuration file by path: ${conf_file}"
 
   if [[ ! -f "${conf_file}" ]]; then
-    err "The configuration file '${conf_file}' not found!"
+    $log_cmd "The configuration file '${conf_file}' not found!"
     return 1
   fi
 
   if [[ ! -r "${conf_file}" ]]; then
-    err "The configuration file '${conf_file}' cannot be read!"
+    $log_cmd "The configuration file '${conf_file}' cannot be read!"
     return 1
   fi
 
@@ -323,16 +328,21 @@ take_checked_config_exists() {
 take_checked_directory_exists_and_writable() {
 
   local database_directory="$1"
+  local with_info="${2:-'false'}"
+  local log_cmd
+
+  # If with_info=true, "info" is written, otherwise "err" is written
+  [[ $with_info == 'true' ]] && log_cmd="info" || log_cmd="err"
 
   info "Looking database directory by path: ${database_directory}"
 
   if [[ ! -d "${database_directory}" ]]; then
-    err "The database directory '${database_directory}' not found!"
+    $log_cmd "The database directory '${database_directory}' not found!"
     return 1
   fi
 
   if [[ ! -w "${database_directory}" ]]; then
-    err "The database directory '${database_directory}' is not writable!"
+    $log_cmd "The database directory '${database_directory}' is not writable!"
     return 1
   fi
 
@@ -342,7 +352,7 @@ take_checked_directory_exists_and_writable() {
     # Deleting it if it was created successfully
     rm -f "${write_test_file}"
   else
-    err "The database directory '${database_directory}' is not writable!"
+    $log_cmd "The database directory '${database_directory}' is not writable!"
     return 1
   fi
 
@@ -742,7 +752,7 @@ main() {
     for _config_file_candidate in "${config_file_orig}" "${config_file_new}"; do
 
       # Checking Config on exists
-      config_file=$(take_checked_config_exists "${_config_file_candidate}")
+      config_file=$(take_checked_config_exists "${_config_file_candidate}" 'true')
       if [[ $? -eq 0 && -n "${config_file}" ]]; then
         break
       fi
@@ -785,7 +795,7 @@ main() {
     for _database_directory_candidate in "${database_directory_config}" "${database_directory_orig}" "${database_directory_new}"; do
 
       # Checking Directory on exists and writable
-      database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}")
+      database_directory=$(take_checked_directory_exists_and_writable "${_database_directory_candidate}" 'true')
       if [[ $? -eq 0 && -n "${database_directory}" ]]; then
         break
       fi
