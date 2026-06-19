@@ -1,6 +1,7 @@
 #!/bin/bash
 
-PROJECT_DIR="$(pwd)/../../"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="${SCRIPT_DIR}/../../"
 PROJECT_DIR="$(realpath "${PROJECT_DIR}")"
 readonly PROJECT_DIR
 
