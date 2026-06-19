@@ -1,5 +1,6 @@
 #!/bin/bash
 
+##
 #
 # geoipdownload
 #
@@ -44,6 +45,7 @@
 #   https://dev.maxmind.com/geoip/updating-databases/
 #   https://github.com/maxmind/geoipupdate
 #
+##
 
 # Strict mode
 #set -o errexit
@@ -84,27 +86,45 @@ VERBOSE=0
 CURRENT_DATE=$(date +'%Y%m%d')
 readonly CURRENT_DATE
 
-#
-# Any message function template
-#
+##
+# Format a message with an ISO 8601 timestamp prefix.
+# Globals:
+#   None
+# Arguments:
+#   Message text to format (all arguments are concatenated).
+# Outputs:
+#   Writes the formatted "[timestamp]: message" string to stdout.
+##
 message() {
   local date
   date=$(date +'%Y-%m-%dT%H:%M:%S%z')
   echo "[${date}]: $*"
 } # mess()
 
-#
-# Error message
-#
+##
+# Print an error message to stderr.
+# Globals:
+#   None
+# Arguments:
+#   Error message text (all arguments are concatenated).
+# Outputs:
+#   Writes the formatted "[ERROR] message" string to stderr.
+##
 err() {
   local msg
   msg=$(message '[ERROR]' "$*")
   echo "${msg}" >&2
 } # err()
 
-#
-# Info message
-#
+##
+# Print an informational message to stderr when verbose mode is enabled.
+# Globals:
+#   VERBOSE
+# Arguments:
+#   Informational message text (all arguments are concatenated).
+# Outputs:
+#   Writes the formatted "[INFO] message" string to stderr if VERBOSE=1.
+##
 info() {
   local verbose=${VERBOSE}
 
@@ -115,18 +135,30 @@ info() {
   fi
 } # info()
 
-#
-# Version of program
-#
+##
+# Print the program name and current version.
+# Globals:
+#   VERSION
+# Arguments:
+#   None
+# Outputs:
+#   Writes "geoipdownload VERSION" to stdout.
+##
 version() {
   local version=${VERSION}
 
   echo "geoipdownload ${version}"
 } # version()
 
-#
-# Usage "--help" function
-#
+##
+# Print the program's help/usage text.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Writes the help message to stdout.
+##
 usage() {
   cat << 'EOF'
 geoipdownload — GeoIP and GeoLite Update Program.
@@ -163,9 +195,19 @@ PARAMS:
 EOF
 }
 
-#
-# Acquire lock
-#
+##
+# Acquire an exclusive non-blocking lock to prevent multiple simultaneous
+# instances of the script from running, and record the current PID in the
+# lock file.
+# Globals:
+#   None
+# Arguments:
+#   Path to the lock file.
+# Outputs:
+#   Writes an error message to stderr if the lock is already held.
+# Returns:
+#   Exits the script with status 1 if another instance is already running.
+##
 acquire_lock() {
 
   local lock_file="$1"
@@ -186,9 +228,15 @@ acquire_lock() {
 
 } # acquire_lock()
 
-#
-# Release lock
-#
+##
+# Release the lock held on file descriptor 9 and remove the lock file.
+# Globals:
+#   None
+# Arguments:
+#   Path to the lock file.
+# Returns:
+#   0 if the lock file does not exist or was released successfully.
+##
 release_lock() {
 
   local lock_file="$1"
@@ -208,12 +256,23 @@ release_lock() {
 
 } # release_lock()
 
-#
-# Parsing of arguments
-#
-# Validation of the argument string via getopt
-# Important: we are suppressing the verification of unknown parameters
-#
+##
+# Parse command-line arguments via getopt and populate the corresponding
+# global variables. Unknown options are silently ignored. If a required
+# parameter is not provided, an informational message is printed noting
+# that the default value will be used.
+# Globals:
+#   CONFIG_FILE
+#   DATABASE_DIRECTORY
+#   VERBOSE
+# Arguments:
+#   Script arguments ("$@").
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes the help or version text to stdout for -h/-V.
+# Returns:
+#   Exits the script with status 0 after -h/--help or -V/--version.
+##
 parse_and_default_args() {
 
   local options
@@ -286,12 +345,20 @@ parse_and_default_args() {
 
 } # parse_and_default_args()
 
-#
-# Check Config exists
-#
-# Checking Config on exists
-# We display errors and information messages inside
-#
+##
+# Check that a configuration file exists and is readable.
+# Globals:
+#   None
+# Arguments:
+#   Path to the configuration file.
+#   Use info, instead errors
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if the file is missing or unreadable.
+#   Writes the validated path to stdout on success.
+# Returns:
+#   0 if the file exists and is readable, 1 otherwise.
+##
 take_checked_config_exists() {
 
   local conf_file="$1"
@@ -319,12 +386,22 @@ take_checked_config_exists() {
 
 } # take_checked_config_exists()
 
-#
-# Check Directory exists and writable
-#
-# Checking Directory on exists and writable
-# We display errors and information messages inside
-#
+##
+# Check that a directory exists and is writable, verifying writability by
+# attempting to create and remove a hidden test file inside it.
+# Globals:
+#   None
+# Arguments:
+#   Path to the directory.
+#   Use info, instead errors
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if the directory is missing or
+#   not writable.
+#   Writes the validated path to stdout on success.
+# Returns:
+#   0 if the directory exists and is writable, 1 otherwise.
+##
 take_checked_directory_exists_and_writable() {
 
   local database_directory="$1"
@@ -362,12 +439,19 @@ take_checked_directory_exists_and_writable() {
 
 } # take_checked_directory_exists_and_writable()
 
-#
-# Read account id
-#
-# Reading account id to variable
-# We display errors and information messages inside
-#
+##
+# Read the AccountID value from a GeoIP.conf configuration file.
+# Globals:
+#   None
+# Arguments:
+#   Path to the configuration file.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if 'AccountID' is missing or empty.
+#   Writes the account ID to stdout on success.
+# Returns:
+#   0 on success, 1 if 'AccountID' is missing or empty.
+##
 read_account_id() {
 
   local conf_file="$1"
@@ -387,12 +471,19 @@ read_account_id() {
 
 } # read_account_id()
 
-#
-# Read license key
-#
-# Reading license key to variable
-# We display errors and information messages inside
-#
+##
+# Read the LicenseKey value from a GeoIP.conf configuration file.
+# Globals:
+#   None
+# Arguments:
+#   Path to the configuration file.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if 'LicenseKey' is missing or empty.
+#   Writes the license key to stdout on success.
+# Returns:
+#   0 on success, 1 if 'LicenseKey' is missing or empty.
+##
 read_license_key() {
 
   local conf_file="$1"
@@ -412,12 +503,20 @@ read_license_key() {
 
 } # read_license_key()
 
-#
-# Read edition ids
-#
-# Reading edition ids to array variable
-# We display errors and information messages inside
-#
+##
+# Read the EditionIDs value from a GeoIP.conf configuration file and split
+# it into a list of edition IDs.
+# Globals:
+#   None
+# Arguments:
+#   Path to the configuration file.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if 'EditionIDs' is missing or empty.
+#   Writes one edition ID per line to stdout on success.
+# Returns:
+#   0 on success, 1 if 'EditionIDs' is missing or empty.
+##
 read_edition_ids() {
 
   local conf_file="$1"
@@ -450,12 +549,20 @@ read_edition_ids() {
 
 } # read_edition_ids()
 
-#
-# Read database directory
-#
-# Reading database directory to variable
-# We display errors and information messages inside
-#
+##
+# Read the DatabaseDirectory value from a GeoIP.conf configuration file.
+# Globals:
+#   None
+# Arguments:
+#   Path to the configuration file.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if 'DatabaseDirectory' is missing
+#   or empty.
+#   Writes the database directory path to stdout on success.
+# Returns:
+#   0 on success, 1 if 'DatabaseDirectory' is missing or empty.
+##
 read_database_directory() {
 
   local conf_file="$1"
@@ -475,12 +582,19 @@ read_database_directory() {
 
 } # read_database_directory()
 
-#
-# Build download url
-#
-# Building download url for current database
-# We display errors and information messages inside
-#
+##
+# Build the MaxMind download URL for a given database edition by
+# substituting the edition ID, current date, and archive type into the
+# URL template.
+# Globals:
+#   DOWNLOAD_URL_TEMPLATE
+#   CURRENT_DATE
+#   DOWNLOAD_TYPE
+# Arguments:
+#   Edition ID (e.g. GeoLite2-City).
+# Outputs:
+#   Writes the built download URL to stdout.
+##
 build_download_url() {
 
   local edition_id="$1"
@@ -496,12 +610,15 @@ build_download_url() {
 
 } # build_download_url()
 
-#
-# Build archive name
-#
-# Building archive name for current database
-# We display errors and information messages inside
-#
+##
+# Build the archive file name for a given database edition.
+# Globals:
+#   DATABASE_ARCHIVE_SUFFIX
+# Arguments:
+#   Edition ID (e.g. GeoLite2-City).
+# Outputs:
+#   Writes the built archive file name to stdout.
+##
 build_archive_name() {
 
   local edition_id="$1"
@@ -513,12 +630,15 @@ build_archive_name() {
 
 } # build_archive_name()
 
-#
-# Build database name
-#
-# Building database name for current database
-# We display errors and information messages inside
-#
+##
+# Build the database (.mmdb) file name for a given database edition.
+# Globals:
+#   DATABASE_FILE_SUFFIX
+# Arguments:
+#   Edition ID (e.g. GeoLite2-City).
+# Outputs:
+#   Writes the built database file name to stdout.
+##
 build_database_name() {
 
   local edition_id="$1"
@@ -530,12 +650,26 @@ build_database_name() {
 
 } # build_database_name()
 
-#
-# Download database archive
-#
-# Downloading archive database from download_url into archive_name
-# We display errors and information messages inside
-#
+##
+# Download a database archive from the MaxMind server using curl with
+# Basic Authorization, saving it into the database directory.
+# Globals:
+#   PROGRAM
+#   CURL_CONNECT_TIMEOUT
+#   CURL_MAX_TIME
+# Arguments:
+#   Database directory path.
+#   MaxMind account ID.
+#   MaxMind license key.
+#   Download URL.
+#   Archive file name to save as.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr describing the curl failure.
+#   Writes the path of the downloaded archive to stdout on success.
+# Returns:
+#   0 on success, 1 if curl fails to download the archive.
+##
 download_database_archive() {
 
   local database_directory="$1"
@@ -589,12 +723,23 @@ download_database_archive() {
 
 } # download_database_archive()
 
-#
-# Check database archive
-#
-# Checking for archive database on valid type
-# We display errors and information messages inside
-#
+##
+# Verify that a downloaded file is a valid gzip+tar archive. If it is not,
+# the file is assumed to contain an error response from the MaxMind API
+# and its contents are printed as an error.
+# Globals:
+#   None
+# Arguments:
+#   Database directory path.
+#   Archive file name.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr, including the archive's contents,
+#   if the archive is invalid.
+#   Writes the path of the validated archive to stdout on success.
+# Returns:
+#   0 if the archive is a valid tar.gz file, 1 otherwise.
+##
 check_database_archive() {
 
   local database_directory="$1"
@@ -619,11 +764,16 @@ check_database_archive() {
 
 } # check_database_archive()
 
-# Delete database archive
-#
-# Deleting for archive database
-# We display errors and information messages inside
-#
+##
+# Delete a downloaded database archive after extraction.
+# Globals:
+#   None
+# Arguments:
+#   Database directory path.
+#   Archive file name.
+# Outputs:
+#   Writes the path of the deleted archive to stdout.
+##
 delete_database_archive() {
 
   local database_directory="$1"
@@ -635,12 +785,24 @@ delete_database_archive() {
 
 } # delete_database_archive()
 
-#
-# Extract database from archive
-#
-# Extracting database from archive into single database file
-# We display errors and information messages inside
-#
+##
+# Extract a single .mmdb database file from a downloaded archive into the
+# database directory.
+# Globals:
+#   None
+# Arguments:
+#   Database directory path.
+#   Archive file name.
+#   Database file name to extract.
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes an error message to stderr if the archive is corrupted or
+#   does not contain the expected database file.
+#   Writes the path of the extracted database file to stdout on success.
+# Returns:
+#   0 on success, 1 if the archive cannot be listed, does not contain the
+#   expected file, or extraction fails.
+##
 extract_database_from_archive() {
 
   local database_directory="$1"
@@ -690,9 +852,30 @@ extract_database_from_archive() {
 
 } # extract_database_from_archive()
 
-#
-# Main function
-#
+##
+# Entry point. Parses arguments, resolves the configuration file and
+# database directory (falling back through default locations), acquires
+# a lock, reads MaxMind credentials and edition IDs from the
+# configuration file, then downloads, validates, extracts, and cleans up
+# the database archive for each requested edition.
+# Globals:
+#   DEFAULT_CONFIG_FILE_ORIG
+#   DEFAULT_CONFIG_FILE_NEW
+#   DEFAULT_DATABASE_DIRECTORY_ORIG
+#   DEFAULT_DATABASE_DIRECTORY_NEW
+#   LOCK_FILE
+#   CONFIG_FILE
+#   DATABASE_DIRECTORY
+# Arguments:
+#   Script arguments ("$@").
+# Outputs:
+#   Writes informational messages to stderr (when verbose).
+#   Writes error messages to stderr on failure.
+# Returns:
+#   Exits the script with status 1 if the configuration file or database
+#   directory cannot be resolved, or if any download/extraction step
+#   fails.
+##
 main() {
 
   local version
